@@ -3,34 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Makeup Studio 💄</title>
+  <title>Makeover Studio 💄</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #ffe0f0 0%, #ffd0e8 50%, #ffb3d9 100%);
+      background: linear-gradient(135deg, #ffe0f0 0%, #ffc8e8 50%, #ffb3d9 100%);
       font-family: 'Nunito', sans-serif;
       display: flex; flex-direction: column; align-items: center;
       padding: 10px 10px 30px;
     }
+    header { text-align: center; padding: 8px 0 6px; }
+    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(1.5rem,5vw,2.4rem); color: #c0306a; text-shadow: 2px 2px 0 rgba(255,255,255,0.6); }
+    #back { position:fixed;top:12px;left:14px;text-decoration:none;color:#c0306a;font-size:1.4rem;font-weight:700;z-index:20;background:rgba(255,255,255,0.6);border-radius:50px;padding:4px 12px; }
 
-    header { text-align: center; padding: 10px 0 6px; }
-    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(1.6rem,6vw,2.6rem); color: #c0306a; text-shadow: 2px 2px 0 rgba(255,255,255,0.6); }
-
-    #back {
-      position: fixed; top: 12px; left: 14px;
-      text-decoration: none; color: #c0306a; font-size: 1.4rem; font-weight: 700; z-index: 20;
-      background: rgba(255,255,255,0.6); border-radius: 50px; padding: 4px 12px;
+    /* Step bar */
+    .steps {
+      display: flex; align-items: center; gap: 6px;
+      background: white; border-radius: 50px; padding: 8px 16px;
+      box-shadow: 0 4px 14px rgba(200,0,100,0.12); margin-bottom: 12px;
     }
-
-    .studio {
-      display: flex; gap: 16px; width: 100%; max-width: 820px;
-      align-items: flex-start; justify-content: center; flex-wrap: wrap;
+    .step {
+      font-family: 'Fredoka One', cursive; font-size: 0.88rem;
+      color: #d0a0b8; transition: color 0.3s;
+      display: flex; align-items: center; gap: 4px;
     }
+    .step.active   { color: #c0306a; }
+    .step.done     { color: #4caf50; }
+    .step-arrow    { color: #d0a0b8; font-size: 0.8rem; }
 
-    /* ── Face card ── */
+    /* Main layout */
+    .studio { display:flex;gap:14px;width:100%;max-width:820px;align-items:flex-start;justify-content:center;flex-wrap:wrap; }
+
     #char-wrap {
       background: white; border-radius: 24px;
       box-shadow: 0 6px 20px rgba(200,0,100,0.15);
@@ -38,330 +43,422 @@
       display: flex; flex-direction: column; align-items: center; gap: 8px;
       position: relative;
     }
+    #char-svg { width: 230px; height: 340px; overflow: visible; }
+    #char-svg.tool-active { cursor: none; }
 
-    #char-svg { width: 220px; height: 320px; overflow: visible; }
-
-    /* Zone circles glow when tool is active */
-    .zone {
-      fill: transparent;
-      stroke: rgba(255,150,200,0.4);
-      stroke-width: 2.5;
-      stroke-dasharray: 6 4;
-      cursor: default;
-      transition: stroke 0.2s;
-      pointer-events: none;
-    }
-    .zone.active {
-      pointer-events: all;
-      cursor: crosshair;
-      stroke: rgba(255,60,150,0.85);
-      stroke-dasharray: 6 4;
-      animation: zonePulse 1.2s ease-in-out infinite;
-    }
-    .zone.active:hover {
-      fill: rgba(255,150,200,0.18);
-      stroke: rgba(255,20,120,1);
-    }
-    @keyframes zonePulse {
-      0%,100% { stroke-opacity: 0.85; }
-      50%      { stroke-opacity: 0.3;  }
+    /* Cursor emoji that follows mouse */
+    #tool-cursor {
+      position: fixed; pointer-events: none; z-index: 999;
+      font-size: 2rem; transform: translate(-8px, -8px);
+      display: none;
     }
 
-    /* Sparkle animation on zone */
-    .sparkle-pop {
-      position: absolute; font-size: 1.8rem; pointer-events: none;
-      animation: sparkleFly 0.65s ease-out forwards;
-    }
-    @keyframes sparkleFly {
-      0%   { opacity: 1; transform: translate(-50%,-50%) scale(0.4); }
-      60%  { opacity: 1; transform: translate(-50%,-110%) scale(1.3); }
-      100% { opacity: 0; transform: translate(-50%,-160%) scale(1);   }
+    #status-msg {
+      font-family: 'Fredoka One', cursive; font-size: 0.92rem;
+      color: #c0306a; text-align: center; min-height: 1.5em;
+      background: #fff0f6; border-radius: 12px; padding: 4px 14px; width: 100%;
     }
 
-    /* ── Status bar ── */
-    #status {
-      font-family: 'Fredoka One', cursive; font-size: 0.95rem;
-      color: #c0306a; text-align: center; min-height: 1.6em;
-      background: #fff0f6; border-radius: 12px; padding: 4px 14px;
-    }
+    /* Progress bar */
+    #progress-wrap { width: 100%; display: none; }
+    #progress-bar-bg { width:100%;height:14px;background:#ffd0e8;border-radius:50px;overflow:hidden; }
+    #progress-bar    { height:100%;background:linear-gradient(90deg,#ff80b0,#cc0066);border-radius:50px;width:0%;transition:width 0.3s; }
+    #progress-label  { text-align:center;font-size:0.8rem;color:#c0306a;font-weight:700;margin-top:3px; }
 
-    /* ── Right panel ── */
+    /* Right panel */
     .panel {
       background: white; border-radius: 20px; padding: 16px;
       box-shadow: 0 6px 20px rgba(200,0,100,0.12);
-      flex: 1 1 200px; min-width: 200px; max-width: 270px;
+      flex: 1 1 200px; min-width: 180px; max-width: 270px;
     }
-    .panel h3 { font-family: 'Fredoka One', cursive; color: #c0306a; font-size: 1.05rem; margin-bottom: 10px; text-align: center; }
+    .panel h3 { font-family:'Fredoka One',cursive; color:#c0306a; font-size:1.05rem; margin-bottom:10px; text-align:center; }
 
-    /* Tool grid */
-    .tool-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
-
+    .tool-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px; }
     .tool-btn {
       border: 2.5px solid #f0b0c8; border-radius: 14px; background: #fff5f8;
       padding: 10px 4px 6px; cursor: pointer; text-align: center;
-      transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: all 0.15s; display:flex;flex-direction:column;align-items:center;gap:3px;
     }
-    .tool-btn .tool-icon { font-size: 1.8rem; display: block; }
-    .tool-btn .tool-name { font-size: 0.72rem; font-weight: 700; color: #c0306a; }
-    .tool-btn:hover  { border-color: #e06090; background: #ffe8f0; transform: translateY(-2px); }
-    .tool-btn.active { border-color: #c0306a; background: linear-gradient(135deg,#ffd0e8,#ffaac8); box-shadow: 0 3px 10px rgba(192,48,106,0.3); transform: translateY(-2px); }
+    .tool-btn .ti { font-size: 1.8rem; }
+    .tool-btn .tn { font-size: 0.72rem; font-weight:700; color:#c0306a; }
+    .tool-btn:hover  { border-color:#e06090;background:#ffe8f0;transform:translateY(-2px); }
+    .tool-btn.active { border-color:#c0306a;background:linear-gradient(135deg,#ffd0e8,#ffaac8);box-shadow:0 3px 10px rgba(192,48,106,0.3);transform:translateY(-2px); }
 
-    /* Eraser */
-    .eraser-btn {
-      width: 100%; padding: 8px; border-radius: 10px;
-      border: 2px dashed #e0b0c8; background: #fff8fb;
-      color: #c0306a; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
-      cursor: pointer; transition: all 0.15s; margin-bottom: 10px;
-    }
-    .eraser-btn:hover  { background: #ffe0ee; }
-    .eraser-btn.active { background: #ffd0e8; border-color: #c0306a; }
+    .eraser-btn { width:100%;padding:8px;border-radius:10px;border:2px dashed #e0b0c8;background:#fff8fb;color:#c0306a;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:10px; }
+    .eraser-btn:hover { background:#ffe0ee; }
+    .eraser-btn.active { background:#ffd0e8;border-color:#c0306a; }
 
-    /* Colour swatches */
-    #colour-section h3 { margin-top: 0; }
-    .colour-row { display: flex; flex-wrap: wrap; gap: 7px; }
-    .swatch {
-      width: 30px; height: 30px; border-radius: 50%;
-      border: 3px solid transparent; cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.18); flex-shrink: 0;
-    }
-    .swatch:hover  { transform: scale(1.2); }
-    .swatch.active { border-color: #440033; transform: scale(1.1); }
+    .colour-row { display:flex;flex-wrap:wrap;gap:7px; }
+    .swatch { width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s;box-shadow:0 2px 5px rgba(0,0,0,0.18);flex-shrink:0; }
+    .swatch:hover  { transform:scale(1.2); }
+    .swatch.active { border-color:#440033;transform:scale(1.1); }
 
-    .reset-btn {
-      margin-top: 14px; width: 100%; padding: 10px; border-radius: 50px; border: none;
-      background: linear-gradient(135deg,#ff80b0,#cc0055); color: white;
-      font-family: 'Fredoka One', cursive; font-size: 1rem;
-      cursor: pointer; box-shadow: 0 3px 0 #880033;
-    }
-    .reset-btn:active { transform: translateY(2px); }
+    .reset-btn { margin-top:12px;width:100%;padding:10px;border-radius:50px;border:none;background:linear-gradient(135deg,#ff80b0,#cc0055);color:white;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;box-shadow:0 3px 0 #880033; }
+
+    /* Zone circles on face */
+    .zone { fill:transparent;stroke:rgba(255,100,160,0.35);stroke-width:2.5;stroke-dasharray:6 4;cursor:default;pointer-events:none;transition:stroke 0.2s; }
+    .zone.active { pointer-events:all;cursor:crosshair;stroke:rgba(255,40,120,0.9);animation:zpulse 1.2s ease-in-out infinite; }
+    .zone.active:hover { fill:rgba(255,150,200,0.2);stroke:rgba(255,0,100,1); }
+    @keyframes zpulse { 0%,100%{stroke-opacity:.9} 50%{stroke-opacity:.25} }
+
+    /* Sparkle pop */
+    .sparkle-pop { position:absolute;font-size:2rem;pointer-events:none;animation:sflyup .65s ease-out forwards; }
+    @keyframes sflyup { 0%{opacity:1;transform:translate(-50%,-50%) scale(.4)} 60%{opacity:1;transform:translate(-50%,-120%) scale(1.3)} 100%{opacity:0;transform:translate(-50%,-170%) scale(1)} }
+
+    /* Dirty smudge scrub */
+    .scrub-hint { font-size:0.78rem;color:#a08060;text-align:center;margin-top:4px; }
   </style>
 </head>
 <body>
 
 <a href="index.html" id="back">← Back</a>
-<header><h1>💄 Makeup Studio 💄</h1></header>
+<div id="tool-cursor"></div>
+
+<header><h1>✨ Makeover Studio ✨</h1></header>
+
+<!-- Step indicators -->
+<div class="steps">
+  <div class="step active" id="s1">🧼 Wash</div>
+  <div class="step-arrow">›</div>
+  <div class="step" id="s2">🪮 Brush</div>
+  <div class="step-arrow">›</div>
+  <div class="step" id="s3">💄 Makeup</div>
+</div>
 
 <div class="studio">
 
-  <!-- ── Face ── -->
+  <!-- Character card -->
   <div id="char-wrap">
-    <svg id="char-svg" viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="faceGrad" cx="45%" cy="40%" r="60%">
-          <stop offset="0%" stop-color="#fde8c8"/>
-          <stop offset="100%" stop-color="#f5c898"/>
-        </radialGradient>
-      </defs>
-
-      <!-- HAIR (simple, fixed) -->
-      <ellipse cx="110" cy="112" rx="84" ry="74" fill="#3d2000"/>
-      <path d="M28 162 Q26 76 110 60 Q194 76 192 162 Q170 100 110 98 Q50 100 28 162Z" fill="#5c3500"/>
-      <path d="M28 162 Q12 185 20 212 Q38 206 42 182 Q36 172 28 162Z" fill="#5c3500"/>
-      <path d="M192 162 Q208 185 200 212 Q182 206 178 182 Q184 172 192 162Z" fill="#5c3500"/>
+    <svg id="char-svg" viewBox="0 0 230 330" xmlns="http://www.w3.org/2000/svg">
 
       <!-- NECK + SHOULDERS -->
-      <rect x="95" y="252" width="30" height="38" rx="10" fill="#f5c898"/>
-      <ellipse cx="110" cy="310" rx="100" ry="38" fill="#ff99cc"/>
-      <ellipse cx="110" cy="305" rx="82" ry="30" fill="#ff80bb"/>
+      <rect x="98" y="258" width="34" height="42" rx="13" fill="#f5c080" stroke="#2a1a00" stroke-width="2.5"/>
+      <path d="M15,325 Q78,298 115,296 Q152,298 215,325 L230,330 L0,330Z" fill="#ff80b0" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
 
-      <!-- FACE -->
-      <ellipse cx="110" cy="170" rx="80" ry="88" fill="url(#faceGrad)"/>
+      <!-- HAIR (neat, fixed short bob) -->
+      <ellipse cx="115" cy="96" rx="86" ry="72" fill="#3d2000" stroke="#2a1a00" stroke-width="2.5"/>
+      <path d="M29,154 Q27,68 115,50 Q203,68 201,154 Q179,94 115,92 Q51,94 29,154Z" fill="#5c3500" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M29,154 Q13,176 21,206 Q41,200 47,178 Q38,166 29,154Z" fill="#5c3500" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M201,154 Q217,176 209,206 Q189,200 183,178 Q192,166 201,154Z" fill="#5c3500" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
 
-      <!-- EARS -->
-      <ellipse cx="32"  cy="172" rx="17" ry="21" fill="#f5c898"/>
-      <ellipse cx="188" cy="172" rx="17" ry="21" fill="#f5c898"/>
-      <ellipse cx="32"  cy="172" rx="9"  ry="12" fill="#edb27e"/>
-      <ellipse cx="188" cy="172" rx="9"  ry="12" fill="#edb27e"/>
-
-      <!-- EYESHADOW (colored, off by default) -->
-      <ellipse id="es-l" cx="84"  cy="155" rx="23" ry="16" fill="transparent" opacity="0.5"/>
-      <ellipse id="es-r" cx="136" cy="155" rx="23" ry="16" fill="transparent" opacity="0.5"/>
-
-      <!-- EYE WHITES -->
-      <ellipse cx="84"  cy="158" rx="22" ry="19" fill="white"/>
-      <ellipse cx="136" cy="158" rx="22" ry="19" fill="white"/>
-
-      <!-- IRISES -->
-      <circle cx="84"  cy="161" r="14" fill="#5b9bd5"/>
-      <circle cx="136" cy="161" r="14" fill="#5b9bd5"/>
-      <circle cx="84"  cy="161" r="9"  fill="#1e4d8c"/>
-      <circle cx="136" cy="161" r="9"  fill="#1e4d8c"/>
-      <circle cx="84"  cy="161" r="5.5" fill="#0a0a0a"/>
-      <circle cx="136" cy="161" r="5.5" fill="#0a0a0a"/>
-      <circle cx="90"  cy="155" r="4"   fill="white"/>
-      <circle cx="142" cy="155" r="4"   fill="white"/>
-
-      <!-- UPPER LASHES -->
-      <path d="M63 148 Q73 138 84 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M84 143 Q95 138 105 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M115 148 Q126 138 136 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M136 143 Q147 138 157 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <line x1="65"  y1="151" x2="61"  y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="74"  y1="144" x2="72"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="84"  y1="142" x2="84"  y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="94"  y1="144" x2="96"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="103" y1="151" x2="107" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="117" y1="151" x2="113" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="126" y1="144" x2="124" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="136" y1="142" x2="136" y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="146" y1="144" x2="148" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="155" y1="151" x2="159" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-
-      <!-- GLAM LASHES (mascara on) -->
-      <g id="glam-lashes" opacity="0">
-        <path d="M60 146 Q68 132 84 138" stroke="#000" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-        <path d="M74 140 Q76 124 84 132" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M84 138 Q84 122 90 128" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M94 140 Q98 124 100 130" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M103 146 Q110 132 105 138" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M114 146 Q122 132 136 138" stroke="#000" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-        <path d="M126 140 Q128 124 136 132" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M136 138 Q136 122 142 128" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M146 140 Q150 124 152 130" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M155 146 Q162 132 157 138" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <!-- MESSY HAIR OVERLAY (visible in wash+brush phase, removed after brushing) -->
+      <g id="hair-mess">
+        <path d="M72,74 Q50,44 36,22"  stroke="#5c3500" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M100,62 Q85,30 105,8"  stroke="#3d2000" stroke-width="3"   fill="none" stroke-linecap="round"/>
+        <path d="M130,60 Q145,28 132,4" stroke="#3d2000" stroke-width="3"   fill="none" stroke-linecap="round"/>
+        <path d="M155,68 Q176,40 196,24" stroke="#5c3500" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M55,110 Q24,94 8,88"   stroke="#3d2000" stroke-width="3"   fill="none" stroke-linecap="round"/>
+        <path d="M175,110 Q206,94 222,88" stroke="#3d2000" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M88,68 Q78,46 96,28 Q110,16 100,0" stroke="#5c3500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M143,66 Q158,44 148,24 Q140,10 156,0" stroke="#3d2000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
       </g>
 
+      <!-- FACE -->
+      <ellipse cx="115" cy="168" rx="80" ry="90" fill="#f9c87a" stroke="#2a1a00" stroke-width="3"/>
+
+      <!-- EARS -->
+      <ellipse cx="37"  cy="168" rx="15" ry="19" fill="#f5b860" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="37"  cy="168" rx="8"  ry="11" fill="#e8a040" stroke="#2a1a00" stroke-width="1.5"/>
+      <ellipse cx="193" cy="168" rx="15" ry="19" fill="#f5b860" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="193" cy="168" rx="8"  ry="11" fill="#e8a040" stroke="#2a1a00" stroke-width="1.5"/>
+
+      <!-- DIRT SPOTS (visible in wash phase) -->
+      <g id="dirt-group">
+        <ellipse id="d0" cx="82"  cy="148" rx="16" ry="11" fill="#7a5010" opacity="0.7" transform="rotate(-15,82,148)"/>
+        <ellipse id="d1" cx="152" cy="180" rx="14" ry="9"  fill="#6b4410" opacity="0.65" transform="rotate(18,152,180)"/>
+        <ellipse id="d2" cx="115" cy="230" rx="18" ry="10" fill="#7a5010" opacity="0.6" transform="rotate(-8,115,230)"/>
+        <ellipse id="d3" cx="56"  cy="192" rx="12" ry="8"  fill="#6b4410" opacity="0.6" transform="rotate(12,56,192)"/>
+        <ellipse id="d4" cx="162" cy="140" rx="14" ry="9"  fill="#7a5010" opacity="0.65" transform="rotate(-20,162,140)"/>
+        <ellipse id="d5" cx="115" cy="165" rx="13" ry="9"  fill="#6b4410" opacity="0.5" transform="rotate(5,115,165)"/>
+      </g>
+
+      <!-- EYE WHITES -->
+      <ellipse cx="84"  cy="154" rx="23" ry="19" fill="white" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="146" cy="154" rx="23" ry="19" fill="white" stroke="#2a1a00" stroke-width="2.5"/>
+
+      <!-- EYESHADOW (applies in makeup phase) -->
+      <ellipse id="es-l" cx="84"  cy="151" rx="23" ry="16" fill="transparent" opacity="0.5"/>
+      <ellipse id="es-r" cx="146" cy="151" rx="23" ry="16" fill="transparent" opacity="0.5"/>
+
+      <!-- IRISES -->
+      <circle cx="84"  cy="155" r="14" fill="#4a90d8"/>
+      <circle cx="146" cy="155" r="14" fill="#4a90d8"/>
+      <circle cx="84"  cy="155" r="9"  fill="#1a4888"/>
+      <circle cx="146" cy="155" r="9"  fill="#1a4888"/>
+      <circle cx="84"  cy="155" r="5.5" fill="#0a0808"/>
+      <circle cx="146" cy="155" r="5.5" fill="#0a0808"/>
+      <circle cx="92"  cy="148" r="4.5" fill="white"/>
+      <circle cx="154" cy="148" r="4.5" fill="white"/>
+
+      <!-- UPPER LID + LASHES -->
+      <path d="M62,154 Q84,135 106,154" stroke="#2a1a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M124,154 Q146,135 168,154" stroke="#2a1a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <line x1="64"  y1="157" x2="57"  y2="143" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="73"  y1="148" x2="69"  y2="133" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="84"  y1="144" x2="84"  y2="128" stroke="#2a1a00" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="95"  y1="148" x2="99"  y2="133" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="104" y1="157" x2="111" y2="143" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="126" y1="157" x2="119" y2="143" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="135" y1="148" x2="131" y2="133" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="146" y1="144" x2="146" y2="128" stroke="#2a1a00" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="157" y1="148" x2="161" y2="133" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="166" y1="157" x2="173" y2="143" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+
       <!-- EYELINER -->
-      <path id="liner-l" d="M62 148 Q84 137 106 148" stroke="transparent" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <path id="liner-r" d="M114 148 Q136 137 158 148" stroke="transparent" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path id="liner-l" d="M62,154 Q84,134 106,154" stroke="transparent" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path id="liner-r" d="M124,154 Q146,134 168,154" stroke="transparent" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+      <!-- GLAM LASHES -->
+      <g id="glam-lashes" opacity="0">
+        <path d="M60,152 Q68,136 84,142" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M73,144 Q76,128 84,136" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M84,140 Q84,124 90,130" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M95,144 Q100,128 102,134" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M104,152 Q112,136 107,142" stroke="#000" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <path d="M122,152 Q130,136 146,142" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M135,144 Q138,128 146,136" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M146,140 Q146,124 152,130" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M157,144 Q162,128 164,134" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M166,152 Q174,136 169,142" stroke="#000" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      </g>
 
       <!-- EYEBROWS -->
-      <path d="M63 132 Q84 121 105 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-      <path d="M115 132 Q136 121 157 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path d="M60,133 Q84,120 108,132" stroke="#3a2010" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M122,132 Q146,120 170,133" stroke="#3a2010" stroke-width="7" fill="none" stroke-linecap="round"/>
 
       <!-- NOSE -->
-      <circle cx="105" cy="192" r="4.5" fill="#edb27e"/>
-      <circle cx="115" cy="192" r="4.5" fill="#edb27e"/>
+      <path d="M109,194 Q115,202 121,194" stroke="#2a1a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="109" cy="194" r="3.5" fill="#e8a040"/>
+      <circle cx="121" cy="194" r="3.5" fill="#e8a040"/>
 
       <!-- BLUSH -->
-      <ellipse id="blush-l" cx="56"  cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0"/>
-      <ellipse id="blush-r" cx="164" cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0"/>
+      <circle id="blush-l" cx="50"  cy="186" r="19" fill="#ff9ab0" opacity="0"/>
+      <circle id="blush-r" cx="180" cy="186" r="19" fill="#ff9ab0" opacity="0"/>
 
       <!-- HIGHLIGHTER -->
-      <ellipse id="hi-l" cx="62"  cy="178" rx="12" ry="7" fill="#fffce0" opacity="0"/>
-      <ellipse id="hi-r" cx="158" cy="178" rx="12" ry="7" fill="#fffce0" opacity="0"/>
+      <ellipse id="hi-l" cx="58"  cy="174" rx="12" ry="7" fill="#fffacc" opacity="0"/>
+      <ellipse id="hi-r" cx="172" cy="174" rx="12" ry="7" fill="#fffacc" opacity="0"/>
 
       <!-- LIPS -->
-      <path id="lip-upper" d="M90 214 Q102 208 110 211 Q118 208 130 214 Q122 207 110 205 Q98 207 90 214Z" fill="#e8667a"/>
-      <path id="lip-lower" d="M90 214 Q110 232 130 214 Q118 228 110 230 Q102 228 90 214Z" fill="#d45068"/>
-      <path d="M90 214 Q110 222 130 214" stroke="#b83050" stroke-width="1.2" fill="none"/>
+      <path id="lip-upper" d="M90,220 Q103,212 115,216 Q127,212 140,220 Q132,228 115,230 Q98,228 90,220Z" fill="#e8405a" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
+      <path id="lip-lower" d="M90,220 Q115,238 140,220 Q132,228 115,230 Q98,228 90,220Z" fill="#c42840" stroke="#2a1a00" stroke-width="1.5"/>
+      <path d="M90,220 Q115,228 140,220" stroke="#2a1a00" stroke-width="1.5" fill="none"/>
 
-      <!-- CLICKABLE ZONES (drawn on top so they intercept clicks) -->
-      <ellipse id="zone-eye-l"   class="zone" cx="84"  cy="155" rx="28" ry="22"/>
-      <ellipse id="zone-eye-r"   class="zone" cx="136" cy="155" rx="28" ry="22"/>
-      <ellipse id="zone-cheek-l" class="zone" cx="56"  cy="190" rx="26" ry="17"/>
-      <ellipse id="zone-cheek-r" class="zone" cx="164" cy="190" rx="26" ry="17"/>
-      <ellipse id="zone-lips"    class="zone" cx="110" cy="220" rx="26" ry="18"/>
+      <!-- CLICKABLE ZONES -->
+      <ellipse id="zone-eye-l"   class="zone" cx="84"  cy="151" rx="30" ry="24"/>
+      <ellipse id="zone-eye-r"   class="zone" cx="146" cy="151" rx="30" ry="24"/>
+      <circle  id="zone-cheek-l" class="zone" cx="50"  cy="186" r="24"/>
+      <circle  id="zone-cheek-r" class="zone" cx="180" cy="186" r="24"/>
+      <ellipse id="zone-lips"    class="zone" cx="115" cy="222" rx="30" ry="20"/>
     </svg>
 
-    <div id="status">👆 Pick a tool to start!</div>
-  </div>
+    <div id="status-msg">🧼 Rub the sponge to wash your face!</div>
 
-  <!-- ── Tools + colours ── -->
-  <div class="panel">
-    <h3>🧴 Pick a Tool</h3>
-
-    <div class="tool-grid">
-      <button class="tool-btn" data-tool="eyeshadow" onclick="selectTool('eyeshadow',this)">
-        <span class="tool-icon">🖌️</span><span class="tool-name">Eyeshadow</span>
-      </button>
-      <button class="tool-btn" data-tool="liner" onclick="selectTool('liner',this)">
-        <span class="tool-icon">✏️</span><span class="tool-name">Eyeliner</span>
-      </button>
-      <button class="tool-btn" data-tool="mascara" onclick="selectTool('mascara',this)">
-        <span class="tool-icon">🪄</span><span class="tool-name">Mascara</span>
-      </button>
-      <button class="tool-btn" data-tool="blush" onclick="selectTool('blush',this)">
-        <span class="tool-icon">🌸</span><span class="tool-name">Blush</span>
-      </button>
-      <button class="tool-btn" data-tool="lipstick" onclick="selectTool('lipstick',this)">
-        <span class="tool-icon">💄</span><span class="tool-name">Lipstick</span>
-      </button>
-      <button class="tool-btn" data-tool="highlighter" onclick="selectTool('highlighter',this)">
-        <span class="tool-icon">✨</span><span class="tool-name">Highlight</span>
-      </button>
+    <div id="progress-wrap">
+      <div id="progress-bar-bg"><div id="progress-bar"></div></div>
+      <div id="progress-label">0%</div>
     </div>
 
-    <button class="eraser-btn" id="eraserBtn" onclick="selectTool('eraser',this)">🧹 Eraser — remove makeup from a zone</button>
-
-    <div id="colour-section">
-      <h3 id="colour-title">🎨 Colour</h3>
-      <div class="colour-row" id="colour-row"></div>
-    </div>
-
-    <button class="reset-btn" onclick="resetAll()">🔄 Start Over</button>
+    <div class="scrub-hint" id="scrub-hint">Move your mouse over the face to scrub</div>
   </div>
 
+  <!-- Right panel -->
+  <div class="panel" id="right-panel">
+    <!-- Content injected by JS per phase -->
+  </div>
 </div>
 
 <script>
-// ── Tool definitions ──────────────────────────────────────
+// ── Phase state ──────────────────────────────────────
+let phase = 'wash'; // wash | brush | makeup
+let dirtLeft = 6;
+let brushCells = new Set();
+const BRUSH_NEEDED = 14;
+
+// ── Sponge/brush cursor ──────────────────────────────
+const cursor = document.getElementById('tool-cursor');
+const charSvg = document.getElementById('char-svg');
+
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+
+function showCursor(emoji) {
+  cursor.textContent = emoji;
+  cursor.style.display = 'block';
+  charSvg.classList.add('tool-active');
+}
+function hideCursor() {
+  cursor.style.display = 'none';
+  charSvg.classList.remove('tool-active');
+}
+
+// ── SVG coords ───────────────────────────────────────
+function svgPt(e) {
+  const rect = charSvg.getBoundingClientRect();
+  const src  = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left) * 230 / rect.width,
+    y: (src.clientY - rect.top)  * 330 / rect.height
+  };
+}
+
+function overFace(pt) {
+  const dx = (pt.x - 115) / 80, dy = (pt.y - 168) / 90;
+  return dx*dx + dy*dy < 1;
+}
+
+// ── PHASE 1: WASH ─────────────────────────────────────
+function startWashPhase() {
+  setStep(1);
+  showCursor('🧽');
+  showProgress();
+  updateProgress(6 - dirtLeft, 6);
+  renderPanel('wash');
+
+  charSvg.addEventListener('mousemove', onWashMove);
+  charSvg.addEventListener('touchmove', onWashTouch, { passive: true });
+}
+
+function onWashMove(e) {
+  if (phase !== 'wash') return;
+  const pt = svgPt(e);
+  if (overFace(pt)) checkDirt(pt);
+}
+function onWashTouch(e) {
+  if (phase !== 'wash') return;
+  const pt = svgPt(e);
+  checkDirt(pt);
+}
+
+function checkDirt(pt) {
+  document.querySelectorAll('#dirt-group ellipse').forEach(el => {
+    if (el.style.display === 'none') return;
+    const cx = parseFloat(el.getAttribute('cx'));
+    const cy = parseFloat(el.getAttribute('cy'));
+    if (Math.hypot(pt.x - cx, pt.y - cy) < 32) {
+      el.style.display = 'none';
+      dirtLeft--;
+      sparkle(cx, cy);
+      updateProgress(6 - dirtLeft, 6);
+      if (dirtLeft === 0) {
+        setTimeout(() => {
+          charSvg.removeEventListener('mousemove', onWashMove);
+          charSvg.removeEventListener('touchmove', onWashTouch);
+          startBrushPhase();
+        }, 600);
+      }
+    }
+  });
+}
+
+// ── PHASE 2: BRUSH ────────────────────────────────────
+function startBrushPhase() {
+  phase = 'brush';
+  setStep(2);
+  showCursor('🪮');
+  brushCells.clear();
+  updateProgress(0, BRUSH_NEEDED);
+  document.getElementById('status-msg').textContent = '🪮 Brush through the hair to smooth it!';
+  renderPanel('brush');
+
+  charSvg.addEventListener('mousemove', onBrushMove);
+  charSvg.addEventListener('touchmove', onBrushTouch, { passive: true });
+}
+
+function onBrushMove(e) {
+  if (phase !== 'brush') return;
+  checkBrush(svgPt(e));
+}
+function onBrushTouch(e) {
+  if (phase !== 'brush') return;
+  checkBrush(svgPt(e));
+}
+
+function checkBrush(pt) {
+  // Hair zone: top of head, approx y < 160 or sides
+  if (pt.y > 180 && pt.x > 40 && pt.x < 190) return;
+  if (pt.y < 20 || pt.y > 220) return;
+  const cell = Math.floor(pt.x / 30) + '_' + Math.floor(pt.y / 30);
+  if (!brushCells.has(cell)) {
+    brushCells.add(cell);
+    updateProgress(brushCells.size, BRUSH_NEEDED);
+    if (brushCells.size >= BRUSH_NEEDED) {
+      // Fade out messy hair
+      document.getElementById('hair-mess').style.opacity = '0';
+      document.getElementById('hair-mess').style.transition = 'opacity 0.6s';
+      setTimeout(() => {
+        document.getElementById('hair-mess').style.display = 'none';
+        charSvg.removeEventListener('mousemove', onBrushMove);
+        charSvg.removeEventListener('touchmove', onBrushTouch);
+        startMakeupPhase();
+      }, 700);
+    }
+  }
+}
+
+// ── PHASE 3: MAKEUP ───────────────────────────────────
+let activeTool = null, activeColour = '#c084fc';
+
 const TOOLS = {
-  eyeshadow:   { label:'Eyeshadow 🖌️',  zones:['eye-l','eye-r'],           colours:['#c084fc','#818cf8','#38bdf8','#34d399','#fb923c','#f472b6','#fbbf24','#a8a29e'] },
-  liner:       { label:'Eyeliner ✏️',    zones:['eye-l','eye-r'],           colours:['#111111','#1e3a8a','#7e22ce','#166534','#881337','#c2410c','#ffffff'] },
-  mascara:     { label:'Mascara 🪄',     zones:['eye-l','eye-r'],           colours:[] },
-  blush:       { label:'Blush 🌸',       zones:['cheek-l','cheek-r'],       colours:['#fda4af','#f9a8d4','#fdba74','#fef08a','#c4b5fd','#86efac'] },
-  lipstick:    { label:'Lipstick 💄',    zones:['lips'],                    colours:['#e8667a','#dc2626','#db2777','#9333ea','#f97316','#fda4af','#fde68a','#854d0e'] },
-  highlighter: { label:'Highlighter ✨', zones:['cheek-l','cheek-r'],       colours:['#fffce0','#fef9c3','#fde68a','#ffc0cb','#e0f2fe'] },
+  eyeshadow:   { label:'Eyeshadow 🖌️', zones:['eye-l','eye-r'],   emoji:'🖌️', colours:['#c084fc','#818cf8','#38bdf8','#34d399','#fb923c','#f472b6','#fbbf24','#a8a29e'] },
+  liner:       { label:'Eyeliner ✏️',   zones:['eye-l','eye-r'],   emoji:'✏️', colours:['#111','#1e3a8a','#7e22ce','#166534','#881337','#c2410c'] },
+  mascara:     { label:'Mascara 🪄',    zones:['eye-l','eye-r'],   emoji:'🪄', colours:[] },
+  blush:       { label:'Blush 🌸',      zones:['cheek-l','cheek-r'],emoji:'🌸', colours:['#fda4af','#f9a8d4','#fdba74','#fef08a','#c4b5fd'] },
+  lipstick:    { label:'Lipstick 💄',   zones:['lips'],             emoji:'💄', colours:['#e8405a','#dc2626','#db2777','#9333ea','#f97316','#fda4af','#fde68a','#854d0e'] },
+  highlighter: { label:'Highlight ✨',  zones:['cheek-l','cheek-r'],emoji:'✨', colours:['#fffce0','#fef9c3','#fde68a','#ffc0cb'] },
 };
 
-let activeTool  = null;
-let activeColour = '#c084fc';
+const ZONE_POS = { 'eye-l':[84,151],'eye-r':[146,151],'cheek-l':[50,186],'cheek-r':[180,186],'lips':[115,222] };
+const ALL_ZONES = Object.keys(ZONE_POS);
 
-// ── Select tool ───────────────────────────────────────────
+function startMakeupPhase() {
+  phase = 'makeup';
+  setStep(3);
+  hideCursor();
+  hideProgress();
+  document.getElementById('status-msg').textContent = '👆 Pick a tool to start your makeover!';
+  document.getElementById('scrub-hint').style.display = 'none';
+  renderPanel('makeup');
+}
+
 function selectTool(name, btn) {
-  // Toggle off if already selected
   if (activeTool === name) {
     activeTool = null;
     document.querySelectorAll('.tool-btn,.eraser-btn').forEach(b => b.classList.remove('active'));
-    updateZones([]);
-    setStatus('👆 Pick a tool to start!');
-    document.getElementById('colour-section').style.display = '';
-    document.getElementById('colour-row').innerHTML = '';
-    document.getElementById('colour-title').textContent = '🎨 Colour';
+    setZones([]);
+    document.getElementById('status-msg').textContent = '👆 Pick a tool!';
+    hideCursor();
+    renderColours([]);
     return;
   }
-
   activeTool = name;
   document.querySelectorAll('.tool-btn,.eraser-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
   if (name === 'eraser') {
-    updateZones(['eye-l','eye-r','cheek-l','cheek-r','lips']);
-    setStatus('🧹 Click a zone to remove its makeup');
-    document.getElementById('colour-row').innerHTML = '';
-    document.getElementById('colour-title').textContent = '';
+    setZones(ALL_ZONES);
+    showCursor('🧹');
+    document.getElementById('status-msg').textContent = '🧹 Click a zone to remove makeup';
+    renderColours([]);
     return;
   }
 
-  const tool = TOOLS[name];
-  updateZones(tool.zones);
-
-  if (name === 'mascara') {
-    setStatus('🪄 Click an eye to add glamour lashes!');
-    document.getElementById('colour-row').innerHTML = '';
-    document.getElementById('colour-title').textContent = '';
-  } else {
-    setStatus(`${tool.label} — click a glowing zone!`);
-    buildColours(tool.colours);
-    document.getElementById('colour-title').textContent = '🎨 Colour';
-  }
+  const t = TOOLS[name];
+  setZones(t.zones);
+  showCursor(t.emoji);
+  document.getElementById('status-msg').textContent = t.label + ' — click a glowing zone!';
+  renderColours(t.colours);
+  if (t.colours.length) activeColour = t.colours[0];
 }
 
-function setStatus(msg) {
-  document.getElementById('status').textContent = msg;
-}
-
-// ── Zone management ───────────────────────────────────────
-const ALL_ZONES = ['eye-l','eye-r','cheek-l','cheek-r','lips'];
-
-function updateZones(activeZones) {
+function setZones(active) {
   ALL_ZONES.forEach(id => {
     const z = document.getElementById('zone-' + id);
-    if (activeZones.includes(id)) {
+    if (active.includes(id)) {
       z.classList.add('active');
-      z.onclick = () => applyToZone(id);
+      z.onclick = () => applyZone(id);
     } else {
       z.classList.remove('active');
       z.onclick = null;
@@ -369,18 +466,157 @@ function updateZones(activeZones) {
   });
 }
 
-// ── Colour picker ─────────────────────────────────────────
-function buildColours(colours) {
+function applyZone(zone) {
+  if (activeTool === 'eraser') { eraseZone(zone); sparkleAt(zone); return; }
+  switch(activeTool) {
+    case 'eyeshadow':
+      document.getElementById(zone === 'eye-l' ? 'es-l' : 'es-r').setAttribute('fill', activeColour);
+      break;
+    case 'liner':
+      document.getElementById(zone === 'eye-l' ? 'liner-l' : 'liner-r').setAttribute('stroke', activeColour);
+      break;
+    case 'mascara':
+      document.getElementById('glam-lashes').setAttribute('opacity','1');
+      break;
+    case 'blush':
+      document.getElementById(zone === 'cheek-l' ? 'blush-l' : 'blush-r').setAttribute('opacity','0.6');
+      document.getElementById(zone === 'cheek-l' ? 'blush-l' : 'blush-r').setAttribute('fill', activeColour);
+      break;
+    case 'lipstick':
+      document.getElementById('lip-upper').setAttribute('fill', activeColour);
+      document.getElementById('lip-lower').setAttribute('fill', darken(activeColour, 28));
+      break;
+    case 'highlighter':
+      document.getElementById(zone === 'cheek-l' ? 'hi-l' : 'hi-r').setAttribute('opacity','0.9');
+      break;
+  }
+  sparkleAt(zone);
+}
+
+function eraseZone(zone) {
+  if (zone === 'eye-l') {
+    document.getElementById('es-l').setAttribute('fill','transparent');
+    document.getElementById('liner-l').setAttribute('stroke','transparent');
+    document.getElementById('glam-lashes').setAttribute('opacity','0');
+  }
+  if (zone === 'eye-r') {
+    document.getElementById('es-r').setAttribute('fill','transparent');
+    document.getElementById('liner-r').setAttribute('stroke','transparent');
+    document.getElementById('glam-lashes').setAttribute('opacity','0');
+  }
+  if (zone.startsWith('cheek')) {
+    const side = zone === 'cheek-l' ? 'l' : 'r';
+    document.getElementById('blush-' + side).setAttribute('opacity','0');
+    document.getElementById('hi-' + side).setAttribute('opacity','0');
+  }
+  if (zone === 'lips') {
+    document.getElementById('lip-upper').setAttribute('fill','#e8405a');
+    document.getElementById('lip-lower').setAttribute('fill','#c42840');
+  }
+}
+
+// ── Sparkle ───────────────────────────────────────────
+function sparkle(svgX, svgY) {
+  const wrap = document.getElementById('char-wrap');
+  const svgEl = charSvg;
+  const r  = svgEl.getBoundingClientRect();
+  const wr = wrap.getBoundingClientRect();
+  const px = r.left - wr.left + (svgX / 230) * r.width;
+  const py = r.top  - wr.top  + (svgY / 330) * r.height;
+  const s  = document.createElement('div');
+  s.className = 'sparkle-pop';
+  s.textContent = ['✨','💫','⭐','🌟'][Math.floor(Math.random()*4)];
+  s.style.left = px + 'px'; s.style.top = py + 'px';
+  wrap.appendChild(s);
+  setTimeout(() => s.remove(), 700);
+}
+function sparkleAt(zone) {
+  const [x,y] = ZONE_POS[zone];
+  sparkle(x, y);
+}
+
+// ── Helpers ───────────────────────────────────────────
+function darken(hex, amt) {
+  const n = parseInt(hex.replace('#',''),16);
+  const r = Math.max(0,(n>>16)-amt), g = Math.max(0,((n>>8)&0xff)-amt), b = Math.max(0,(n&0xff)-amt);
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function setStep(n) {
+  ['s1','s2','s3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.className = 'step' + (i+1 < n ? ' done' : i+1 === n ? ' active' : '');
+  });
+}
+
+function showProgress() {
+  document.getElementById('progress-wrap').style.display = 'block';
+}
+function hideProgress() {
+  document.getElementById('progress-wrap').style.display = 'none';
+}
+function updateProgress(val, max) {
+  const pct = Math.min(100, Math.round(val / max * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = pct + '%';
+  if (val >= max) {
+    document.getElementById('status-msg').textContent = '🎉 Amazing! Moving on...';
+  }
+}
+
+// ── Panel rendering ───────────────────────────────────
+function renderPanel(p) {
+  const panel = document.getElementById('right-panel');
+  if (p === 'wash') {
+    panel.innerHTML = `
+      <h3>🧼 Wash Time!</h3>
+      <p style="color:#888;font-size:0.9rem;text-align:center;line-height:1.5">
+        Move your mouse (or finger) all over the face to scrub away the dirt!
+      </p>
+      <div style="text-align:center;font-size:3rem;margin:20px 0">🧽💧</div>
+      <p style="color:#c0306a;font-size:0.85rem;text-align:center;font-weight:700">${dirtLeft} dirt spots left</p>
+    `;
+  } else if (p === 'brush') {
+    panel.innerHTML = `
+      <h3>🪮 Brush Time!</h3>
+      <p style="color:#888;font-size:0.9rem;text-align:center;line-height:1.5">
+        Move the brush through all of her hair to smooth out the tangles!
+      </p>
+      <div style="text-align:center;font-size:3rem;margin:20px 0">🪮💆‍♀️</div>
+    `;
+  } else {
+    panel.innerHTML = `
+      <h3>🧴 Pick a Tool</h3>
+      <div class="tool-grid">
+        ${Object.entries(TOOLS).map(([id,t]) => `
+          <button class="tool-btn" onclick="selectTool('${id}',this)">
+            <span class="ti">${t.emoji}</span>
+            <span class="tn">${t.label.split(' ')[0]}</span>
+          </button>
+        `).join('')}
+      </div>
+      <button class="eraser-btn" onclick="selectTool('eraser',this)">🧹 Eraser</button>
+      <div id="colour-section">
+        <h3 id="colour-title" style="font-family:'Fredoka One',cursive;color:#c0306a;font-size:1rem;margin-bottom:8px;text-align:center">🎨 Colour</h3>
+        <div class="colour-row" id="colour-row"></div>
+      </div>
+      <button class="reset-btn" onclick="resetMakeup()">🔄 Start Over</button>
+    `;
+  }
+}
+
+function renderColours(colours) {
   const row = document.getElementById('colour-row');
+  if (!row) return;
   row.innerHTML = '';
-  colours.forEach((c, i) => {
+  colours.forEach((c,i) => {
     const s = document.createElement('div');
-    s.className = 'swatch' + (i === 0 ? ' active' : '');
+    s.className = 'swatch' + (i===0?' active':'');
     s.style.background = c;
-    if (c === '#ffffff') s.style.border = '3px solid #ddd';
+    if (c==='#111') s.style.border='3px solid #666';
     s.onclick = () => {
       activeColour = c;
-      row.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      row.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
       s.classList.add('active');
     };
     row.appendChild(s);
@@ -388,118 +624,26 @@ function buildColours(colours) {
   if (colours.length) activeColour = colours[0];
 }
 
-// ── Apply makeup ──────────────────────────────────────────
-function applyToZone(zone) {
-  const svg = document.getElementById('char-svg');
-
-  if (activeTool === 'eraser') {
-    eraseZone(zone);
-    sparkle(zone);
-    return;
-  }
-
-  switch(activeTool) {
-    case 'eyeshadow':
-      if (zone === 'eye-l' || zone === 'eye-r') {
-        const id = zone === 'eye-l' ? 'es-l' : 'es-r';
-        svg.getElementById(id).setAttribute('fill', activeColour);
-      }
-      break;
-
-    case 'liner':
-      if (zone === 'eye-l') svg.getElementById('liner-l').setAttribute('stroke', activeColour);
-      if (zone === 'eye-r') svg.getElementById('liner-r').setAttribute('stroke', activeColour);
-      break;
-
-    case 'mascara':
-      svg.getElementById('glam-lashes').setAttribute('opacity','1');
-      break;
-
-    case 'blush':
-      if (zone === 'cheek-l') { svg.getElementById('blush-l').setAttribute('fill', activeColour); svg.getElementById('blush-l').setAttribute('opacity','0.6'); }
-      if (zone === 'cheek-r') { svg.getElementById('blush-r').setAttribute('fill', activeColour); svg.getElementById('blush-r').setAttribute('opacity','0.6'); }
-      break;
-
-    case 'lipstick':
-      svg.getElementById('lip-upper').setAttribute('fill', activeColour);
-      svg.getElementById('lip-lower').setAttribute('fill', darken(activeColour, 25));
-      break;
-
-    case 'highlighter':
-      if (zone === 'cheek-l') svg.getElementById('hi-l').setAttribute('opacity','0.9');
-      if (zone === 'cheek-r') svg.getElementById('hi-r').setAttribute('opacity','0.9');
-      break;
-  }
-  sparkle(zone);
-}
-
-function eraseZone(zone) {
-  const svg = document.getElementById('char-svg');
-  if (zone === 'eye-l') {
-    svg.getElementById('es-l').setAttribute('fill','transparent');
-    svg.getElementById('liner-l').setAttribute('stroke','transparent');
-    svg.getElementById('glam-lashes').setAttribute('opacity','0');
-  }
-  if (zone === 'eye-r') {
-    svg.getElementById('es-r').setAttribute('fill','transparent');
-    svg.getElementById('liner-r').setAttribute('stroke','transparent');
-    svg.getElementById('glam-lashes').setAttribute('opacity','0');
-  }
-  if (zone === 'cheek-l') { svg.getElementById('blush-l').setAttribute('opacity','0'); svg.getElementById('hi-l').setAttribute('opacity','0'); }
-  if (zone === 'cheek-r') { svg.getElementById('blush-r').setAttribute('opacity','0'); svg.getElementById('hi-r').setAttribute('opacity','0'); }
-  if (zone === 'lips') { svg.getElementById('lip-upper').setAttribute('fill','#e8667a'); svg.getElementById('lip-lower').setAttribute('fill','#d45068'); }
-}
-
-// ── Sparkle effect ────────────────────────────────────────
-const ZONE_POS = { 'eye-l':[84,155], 'eye-r':[136,155], 'cheek-l':[56,190], 'cheek-r':[164,190], 'lips':[110,220] };
-
-function sparkle(zone) {
-  const [zx, zy] = ZONE_POS[zone];
-  const wrap = document.getElementById('char-wrap');
-  const svgEl = document.getElementById('char-svg');
-  const rect  = svgEl.getBoundingClientRect();
-  const wRect = wrap.getBoundingClientRect();
-  const vb = [220, 320];
-  const px = rect.left - wRect.left + (zx / vb[0]) * rect.width;
-  const py = rect.top  - wRect.top  + (zy / vb[1]) * rect.height;
-  const s = document.createElement('div');
-  s.className = 'sparkle-pop';
-  s.textContent = ['✨','💫','⭐','🌟'][Math.floor(Math.random()*4)];
-  s.style.left = px + 'px';
-  s.style.top  = py + 'px';
-  wrap.appendChild(s);
-  setTimeout(() => s.remove(), 700);
-}
-
-// ── Helpers ───────────────────────────────────────────────
-function darken(hex, amt) {
-  const n = parseInt(hex.replace('#',''),16);
-  const r = Math.max(0,(n>>16)-amt);
-  const g = Math.max(0,((n>>8)&0xff)-amt);
-  const b = Math.max(0,(n&0xff)-amt);
-  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
-
-function resetAll() {
-  const svg = document.getElementById('char-svg');
-  svg.getElementById('es-l').setAttribute('fill','transparent');
-  svg.getElementById('es-r').setAttribute('fill','transparent');
-  svg.getElementById('liner-l').setAttribute('stroke','transparent');
-  svg.getElementById('liner-r').setAttribute('stroke','transparent');
-  svg.getElementById('glam-lashes').setAttribute('opacity','0');
-  svg.getElementById('blush-l').setAttribute('opacity','0');
-  svg.getElementById('blush-r').setAttribute('opacity','0');
-  svg.getElementById('hi-l').setAttribute('opacity','0');
-  svg.getElementById('hi-r').setAttribute('opacity','0');
-  svg.getElementById('lip-upper').setAttribute('fill','#e8667a');
-  svg.getElementById('lip-lower').setAttribute('fill','#d45068');
+function resetMakeup() {
+  ['es-l','es-r'].forEach(id => document.getElementById(id).setAttribute('fill','transparent'));
+  ['liner-l','liner-r'].forEach(id => document.getElementById(id).setAttribute('stroke','transparent'));
+  document.getElementById('glam-lashes').setAttribute('opacity','0');
+  ['blush-l','blush-r'].forEach(id => document.getElementById(id).setAttribute('opacity','0'));
+  ['hi-l','hi-r'].forEach(id => document.getElementById(id).setAttribute('opacity','0'));
+  document.getElementById('lip-upper').setAttribute('fill','#e8405a');
+  document.getElementById('lip-lower').setAttribute('fill','#c42840');
   activeTool = null;
-  document.querySelectorAll('.tool-btn,.eraser-btn').forEach(b => b.classList.remove('active'));
-  updateZones([]);
-  document.getElementById('colour-row').innerHTML = '';
-  document.getElementById('colour-title').textContent = '🎨 Colour';
-  setStatus('👆 Pick a tool to start!');
+  document.querySelectorAll('.tool-btn,.eraser-btn').forEach(b=>b.classList.remove('active'));
+  setZones([]);
+  hideCursor();
+  document.getElementById('status-msg').textContent = '👆 Pick a tool to start your makeover!';
+  renderColours([]);
 }
+
+// ── Init ──────────────────────────────────────────────
+showProgress();
+renderPanel('wash');
+startWashPhase();
 </script>
 </body>
 </html>

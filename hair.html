@@ -7,7 +7,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #f9c6e8 0%, #e8aaff 100%);
@@ -15,471 +14,343 @@
       display: flex; flex-direction: column; align-items: center;
       padding: 10px 10px 30px;
     }
-
-    header { text-align: center; padding: 10px 0 8px; width: 100%; }
+    header { text-align: center; padding: 10px 0 8px; }
     h1 { font-family: 'Fredoka One', cursive; font-size: clamp(1.6rem,6vw,2.6rem); color: #c030a0; text-shadow: 2px 2px 0 rgba(255,255,255,0.6); }
-
-    #back {
-      position: fixed; top: 12px; left: 14px;
-      text-decoration: none; color: #c030a0; font-size: 1.4rem; font-weight: 700; z-index: 20;
-      background: rgba(255,255,255,0.6); border-radius: 50px; padding: 4px 12px;
-    }
-
-    .studio {
-      display: flex; gap: 16px; width: 100%; max-width: 860px;
-      align-items: flex-start; justify-content: center; flex-wrap: wrap;
-    }
-
+    #back { position:fixed;top:12px;left:14px;text-decoration:none;color:#c030a0;font-size:1.4rem;font-weight:700;z-index:20;background:rgba(255,255,255,0.6);border-radius:50px;padding:4px 12px; }
+    .studio { display:flex;gap:16px;width:100%;max-width:880px;align-items:flex-start;justify-content:center;flex-wrap:wrap; }
     #char-wrap {
-      background: white; border-radius: 24px;
-      box-shadow: 0 6px 20px rgba(180,0,180,0.15);
-      padding: 16px; flex: 0 0 auto;
-      display: flex; flex-direction: column; align-items: center;
-      position: relative; overflow: hidden;
+      background:white;border-radius:24px;box-shadow:0 6px 20px rgba(180,0,180,0.15);
+      padding:16px;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:10px;
     }
-
-    #char-svg { width: 220px; height: 320px; overflow: visible; }
-
-    /* Snip animation */
-    #snip-emoji {
-      position: absolute; font-size: 2.5rem; pointer-events: none;
-      opacity: 0; transition: none; top: 40%; left: 50%; transform: translate(-50%,-50%);
-    }
-    #snip-emoji.pop {
-      animation: snipPop 0.7s ease-out forwards;
-    }
-    @keyframes snipPop {
-      0%   { opacity: 1; transform: translate(-50%,-50%) scale(0.5); }
-      50%  { opacity: 1; transform: translate(-50%,-120%) scale(1.4); }
-      100% { opacity: 0; transform: translate(-50%,-180%) scale(1); }
-    }
-
-    .panel {
-      background: white; border-radius: 20px; padding: 16px;
-      box-shadow: 0 6px 20px rgba(180,0,180,0.12);
-      flex: 1 1 200px; min-width: 180px; max-width: 270px;
-    }
-
-    .panel h3 { font-family: 'Fredoka One', cursive; color: #b030c0; font-size: 1.05rem; margin-bottom: 10px; text-align: center; }
-
-    .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .style-btn {
-      border: 2.5px solid #e0b0f0; border-radius: 12px; background: #fdf0ff;
-      padding: 8px 4px; cursor: pointer; text-align: center;
-      font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; color: #880088;
-      transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    }
-    .style-btn .icon { font-size: 1.5rem; }
-    .style-btn:hover { border-color: #c040d0; background: #f5d0ff; }
-    .style-btn.active { border-color: #c040d0; background: linear-gradient(135deg,#f5d0ff,#e0a0ff); box-shadow: 0 2px 8px rgba(180,0,220,0.25); }
-
-    .colour-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-    .colour-swatch {
-      width: 100%; aspect-ratio: 1; border-radius: 50%; border: 3px solid transparent;
-      cursor: pointer; transition: transform 0.15s, border-color 0.15s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-    .colour-swatch:hover  { transform: scale(1.15); }
-    .colour-swatch.active { border-color: #440044; transform: scale(1.1); }
-
-    /* Cut panel */
-    .length-bar {
-      display: flex; gap: 6px; margin: 10px 0 14px;
-      justify-content: center;
-    }
-    .length-pip {
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #e0b0f0; border: 2px solid #c080e0;
-      transition: background 0.2s;
-    }
-    .length-pip.filled { background: #b030c0; border-color: #880099; }
-
-    .length-label {
-      text-align: center; font-family: 'Fredoka One', cursive;
-      font-size: 1rem; color: #b030c0; margin-bottom: 12px; min-height: 1.4em;
-    }
-
-    .cut-btn {
-      width: 100%; padding: 14px; border-radius: 16px; border: none;
-      background: linear-gradient(135deg,#ff80cc,#cc0080);
-      color: white; font-family: 'Fredoka One', cursive; font-size: 1.3rem;
-      cursor: pointer; box-shadow: 0 4px 0 #880055; transition: transform 0.1s, box-shadow 0.1s;
-      letter-spacing: 1px;
-    }
-    .cut-btn:hover { filter: brightness(1.08); }
-    .cut-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #880055; }
-    .cut-btn:disabled { background: #ddd; box-shadow: 0 4px 0 #bbb; cursor: default; }
-
-    .grow-btn {
-      margin-top: 10px; width: 100%; padding: 10px; border-radius: 50px;
-      border: 2.5px solid #c0e0a0; background: #f0fff0;
-      color: #3a7a00; font-family: 'Fredoka One', cursive; font-size: 1rem;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .grow-btn:hover { background: #d8f5c8; }
-    .grow-btn:disabled { opacity: 0.4; cursor: default; }
-
-    .reset-btn {
-      margin-top: 10px; width: 100%; padding: 10px; border-radius: 50px; border: none;
-      background: linear-gradient(135deg,#ff80cc,#cc0080); color: white;
-      font-family: 'Fredoka One', cursive; font-size: 1rem;
-      cursor: pointer; box-shadow: 0 3px 0 #880055;
-    }
-    .reset-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #880055; }
+    #char-svg { width:240px;height:360px;overflow:visible; }
+    #char-svg.no-cursor { cursor:none; }
+    .hint { font-size:0.85rem;color:#aa60cc;text-align:center;font-weight:700; }
+    .grow-btn { padding:9px 24px;border-radius:50px;border:2.5px solid #c0e0a0;background:#f0fff0;color:#3a7a00;font-family:'Fredoka One',cursive;font-size:0.95rem;cursor:pointer; }
+    .grow-btn:hover { background:#d8f5c8; }
+    .panel { background:white;border-radius:20px;padding:16px;box-shadow:0 6px 20px rgba(180,0,180,0.12);flex:1 1 200px;min-width:180px;max-width:270px; }
+    .panel h3 { font-family:'Fredoka One',cursive;color:#b030c0;font-size:1.05rem;margin-bottom:10px;text-align:center; }
+    .style-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+    .style-btn { border:2.5px solid #e0b0f0;border-radius:12px;background:#fdf0ff;padding:8px 4px;cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;font-size:0.82rem;font-weight:700;color:#880088;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:3px; }
+    .style-btn .icon { font-size:1.5rem; }
+    .style-btn:hover { border-color:#c040d0;background:#f5d0ff; }
+    .style-btn.active { border-color:#c040d0;background:linear-gradient(135deg,#f5d0ff,#e0a0ff);box-shadow:0 2px 8px rgba(180,0,220,0.25); }
+    .colour-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:8px; }
+    .colour-swatch { width:100%;aspect-ratio:1;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.15s;box-shadow:0 2px 6px rgba(0,0,0,0.15); }
+    .colour-swatch:hover { transform:scale(1.15); }
+    .colour-swatch.active { border-color:#440044;transform:scale(1.1); }
+    .reset-btn { margin-top:10px;width:100%;padding:10px;border-radius:50px;border:none;background:linear-gradient(135deg,#ff80cc,#cc0080);color:white;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;box-shadow:0 3px 0 #880055; }
   </style>
 </head>
 <body>
-
 <a href="index.html" id="back">← Back</a>
 <header><h1>💇‍♀️ Hair Salon 💇‍♀️</h1></header>
 
 <div class="studio">
-
-  <!-- Character -->
   <div id="char-wrap">
-    <div id="snip-emoji">✂️</div>
-    <svg id="char-svg" viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg">
+    <svg id="char-svg" viewBox="0 0 240 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <clipPath id="hairClip">
-          <rect id="clipRect" x="-60" y="-60" width="380" height="500"/>
-        </clipPath>
-        <radialGradient id="faceGrad" cx="45%" cy="40%" r="60%">
-          <stop offset="0%" stop-color="#fde8c8"/>
-          <stop offset="100%" stop-color="#f5c898"/>
-        </radialGradient>
+        <clipPath id="hairClip"><rect id="clipRect" x="-60" y="-60" width="420" height="500"/></clipPath>
       </defs>
 
       <!-- ① HAIR BEHIND FACE -->
       <g id="hair-back" clip-path="url(#hairClip)"></g>
 
-      <!-- ② NECK + SHOULDERS -->
-      <rect x="95" y="252" width="30" height="38" rx="10" fill="#f5c898"/>
-      <ellipse cx="110" cy="310" rx="100" ry="38" fill="#ff99cc"/>
-      <ellipse cx="110" cy="305" rx="82" ry="30" fill="#ff80bb"/>
+      <!-- NECK -->
+      <rect x="103" y="268" width="34" height="44" rx="14" fill="#f5c080" stroke="#2a1a00" stroke-width="2.5"/>
 
-      <!-- ③ FACE -->
-      <ellipse cx="110" cy="170" rx="80" ry="88" fill="url(#faceGrad)"/>
+      <!-- SHOULDERS -->
+      <path d="M20,355 Q80,326 120,324 Q160,326 220,355 L240,360 L0,360Z" fill="#ff80b0" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
+
+      <!-- FACE -->
+      <ellipse cx="120" cy="178" rx="84" ry="94" fill="#f9c87a" stroke="#2a1a00" stroke-width="3"/>
 
       <!-- EARS -->
-      <ellipse cx="32" cy="172" rx="17" ry="21" fill="#f5c898"/>
-      <ellipse cx="188" cy="172" rx="17" ry="21" fill="#f5c898"/>
-      <ellipse cx="32" cy="172" rx="9" ry="12" fill="#edb27e"/>
-      <ellipse cx="188" cy="172" rx="9" ry="12" fill="#edb27e"/>
+      <ellipse cx="38"  cy="178" rx="16" ry="20" fill="#f5b860" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="202" cy="178" rx="16" ry="20" fill="#f5b860" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="38"  cy="178" rx="8"  ry="11" fill="#e8a040" stroke="#2a1a00" stroke-width="1.5"/>
+      <ellipse cx="202" cy="178" rx="8"  ry="11" fill="#e8a040" stroke="#2a1a00" stroke-width="1.5"/>
 
       <!-- EYE WHITES -->
-      <ellipse cx="84" cy="158" rx="22" ry="19" fill="white"/>
-      <ellipse cx="136" cy="158" rx="22" ry="19" fill="white"/>
+      <ellipse cx="88"  cy="163" rx="24" ry="20" fill="white" stroke="#2a1a00" stroke-width="2.5"/>
+      <ellipse cx="152" cy="163" rx="24" ry="20" fill="white" stroke="#2a1a00" stroke-width="2.5"/>
 
       <!-- IRISES -->
-      <circle cx="84"  cy="161" r="14" fill="#5b9bd5"/>
-      <circle cx="136" cy="161" r="14" fill="#5b9bd5"/>
-      <circle cx="84"  cy="161" r="9"  fill="#1e4d8c"/>
-      <circle cx="136" cy="161" r="9"  fill="#1e4d8c"/>
+      <circle cx="88"  cy="164" r="15" fill="#4a90d8"/>
+      <circle cx="152" cy="164" r="15" fill="#4a90d8"/>
+      <circle cx="88"  cy="164" r="10" fill="#1a4888"/>
+      <circle cx="152" cy="164" r="10" fill="#1a4888"/>
       <!-- PUPILS -->
-      <circle cx="84"  cy="161" r="5.5" fill="#0a0a0a"/>
-      <circle cx="136" cy="161" r="5.5" fill="#0a0a0a"/>
+      <circle cx="88"  cy="164" r="6" fill="#0a0808"/>
+      <circle cx="152" cy="164" r="6" fill="#0a0808"/>
       <!-- SHINE -->
-      <circle cx="90"  cy="155" r="4"   fill="white"/>
-      <circle cx="142" cy="155" r="4"   fill="white"/>
-      <circle cx="87"  cy="166" r="1.8" fill="rgba(255,255,255,0.55)"/>
-      <circle cx="139" cy="166" r="1.8" fill="rgba(255,255,255,0.55)"/>
+      <circle cx="96"  cy="157" r="5" fill="white"/>
+      <circle cx="160" cy="157" r="5" fill="white"/>
+      <circle cx="93"  cy="169" r="2.5" fill="rgba(255,255,255,0.5)"/>
+      <circle cx="157" cy="169" r="2.5" fill="rgba(255,255,255,0.5)"/>
 
-      <!-- UPPER LASHES -->
-      <path d="M63 148 Q73 138 84 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M84 143 Q95 138 105 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M115 148 Q126 138 136 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M136 143 Q147 138 157 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <!-- Lash tips -->
-      <line x1="65"  y1="151" x2="61"  y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="74"  y1="144" x2="72"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="84"  y1="142" x2="84"  y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="94"  y1="144" x2="96"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="103" y1="151" x2="107" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="117" y1="151" x2="113" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="126" y1="144" x2="124" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="136" y1="142" x2="136" y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="146" y1="144" x2="148" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="155" y1="151" x2="159" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- UPPER LID (bold graphic line) -->
+      <path d="M65,163 Q88,144 111,163" stroke="#2a1a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M129,163 Q152,144 175,163" stroke="#2a1a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>
 
-      <!-- EYEBROWS -->
-      <path d="M63 132 Q84 121 105 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-      <path d="M115 132 Q136 121 157 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <!-- LASHES (bold, graphic) -->
+      <line x1="67"  y1="166" x2="60"  y2="152" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="76"  y1="157" x2="72"  y2="142" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="88"  y1="153" x2="88"  y2="137" stroke="#2a1a00" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="100" y1="157" x2="104" y2="142" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="109" y1="166" x2="116" y2="153" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="131" y1="166" x2="124" y2="153" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="140" y1="157" x2="136" y2="142" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="152" y1="153" x2="152" y2="137" stroke="#2a1a00" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="164" y1="157" x2="168" y2="142" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
+      <line x1="173" y1="166" x2="180" y2="153" stroke="#2a1a00" stroke-width="3"   stroke-linecap="round"/>
 
-      <!-- NOSE — two soft dots -->
-      <circle cx="105" cy="192" r="4.5" fill="#edb27e"/>
-      <circle cx="115" cy="192" r="4.5" fill="#edb27e"/>
+      <!-- EYEBROWS (thick, graphic) -->
+      <path d="M62,142 Q88,128 114,140"  stroke="#3a2010" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M126,140 Q152,128 178,142" stroke="#3a2010" stroke-width="7" fill="none" stroke-linecap="round"/>
 
-      <!-- CHEEKS (always on) -->
-      <ellipse cx="56"  cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0.45"/>
-      <ellipse cx="164" cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0.45"/>
+      <!-- NOSE (simple graphic) -->
+      <path d="M113,204 Q120,212 127,204" stroke="#2a1a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="113" cy="204" r="3.5" fill="#e8a040"/>
+      <circle cx="127" cy="204" r="3.5" fill="#e8a040"/>
 
-      <!-- MOUTH -->
-      <path d="M92 214 Q110 232 128 214" stroke="#e8667a" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <circle cx="92"  cy="214" r="2.8" fill="#e8667a"/>
-      <circle cx="128" cy="214" r="2.8" fill="#e8667a"/>
+      <!-- ROSY CHEEKS -->
+      <circle cx="52"  cy="196" r="20" fill="#ff9ab0" opacity="0.5"/>
+      <circle cx="188" cy="196" r="20" fill="#ff9ab0" opacity="0.5"/>
+
+      <!-- LIPS (bold graphic) -->
+      <path d="M94,228 Q107,218 120,222 Q133,218 146,228 Q138,238 120,240 Q102,238 94,228Z" fill="#e8405a" stroke="#2a1a00" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M94,228 Q120,248 146,228" stroke="#2a1a00" stroke-width="2" fill="none"/>
+      <!-- Lip shine -->
+      <ellipse cx="113" cy="224" rx="7" ry="3.5" fill="rgba(255,255,255,0.35)"/>
 
       <!-- ④ HAIR FRONT (on top of face) -->
       <g id="hair-front" clip-path="url(#hairClip)"></g>
+
+      <!-- SCISSORS + CUT LINE -->
+      <line id="cut-line" x1="0" y1="100" x2="240" y2="100"
+            stroke="#ff2288" stroke-width="2.5" stroke-dasharray="10 5"
+            display="none" pointer-events="none"/>
+      <text id="scissors-cur" font-size="28" text-anchor="middle" dominant-baseline="middle"
+            display="none" pointer-events="none" style="user-select:none">✂️</text>
     </svg>
+
+    <div class="hint">Drag ✂️ through the hair to cut</div>
+    <button class="grow-btn" onclick="growBack()">🌱 Grow back</button>
   </div>
 
-  <!-- Style + Colour panel -->
+  <!-- Style + Colour -->
   <div class="panel">
     <h3>✂️ Hairstyle</h3>
     <div class="style-grid">
-      <button class="style-btn active" data-style="short"     onclick="setStyle('short',this)">    <span class="icon">💆</span>Short Bob</button>
-      <button class="style-btn"        data-style="long"      onclick="setStyle('long',this)">     <span class="icon">👩</span>Long</button>
-      <button class="style-btn"        data-style="curly"     onclick="setStyle('curly',this)">    <span class="icon">🌀</span>Curly</button>
-      <button class="style-btn"        data-style="bun"       onclick="setStyle('bun',this)">      <span class="icon">🍩</span>Top Bun</button>
-      <button class="style-btn"        data-style="pigtails"  onclick="setStyle('pigtails',this)"> <span class="icon">🎀</span>Pigtails</button>
-      <button class="style-btn"        data-style="ponytail"  onclick="setStyle('ponytail',this)"> <span class="icon">🐴</span>Ponytail</button>
+      <button class="style-btn active" data-style="short"    onclick="setStyle('short',this)">   <span class="icon">💆</span>Short Bob</button>
+      <button class="style-btn"        data-style="long"     onclick="setStyle('long',this)">    <span class="icon">👩</span>Long</button>
+      <button class="style-btn"        data-style="curly"    onclick="setStyle('curly',this)">   <span class="icon">🌀</span>Curly</button>
+      <button class="style-btn"        data-style="bun"      onclick="setStyle('bun',this)">     <span class="icon">🍩</span>Top Bun</button>
+      <button class="style-btn"        data-style="pigtails" onclick="setStyle('pigtails',this)"><span class="icon">🎀</span>Pigtails</button>
+      <button class="style-btn"        data-style="ponytail" onclick="setStyle('ponytail',this)"><span class="icon">🐴</span>Ponytail</button>
     </div>
-
     <h3 style="margin-top:16px">🎨 Colour</h3>
     <div class="colour-grid">
       <div class="colour-swatch active" style="background:#3d2000" onclick="setColour('#3d2000','#1e1000',this)"></div>
       <div class="colour-swatch" style="background:#7a3b10" onclick="setColour('#7a3b10','#4a1e00',this)"></div>
       <div class="colour-swatch" style="background:#c8904a" onclick="setColour('#c8904a','#9a6020',this)"></div>
-      <div class="colour-swatch" style="background:#f0d860" onclick="setColour('#f0d860','#c0a830',this)"></div>
+      <div class="colour-swatch" style="background:#f0d860" onclick="setColour('#f0d860','#b89020',this)"></div>
       <div class="colour-swatch" style="background:#cc2200" onclick="setColour('#cc2200','#880000',this)"></div>
       <div class="colour-swatch" style="background:#ff55aa" onclick="setColour('#ff55aa','#cc2277',this)"></div>
       <div class="colour-swatch" style="background:#9922ff" onclick="setColour('#9922ff','#6600bb',this)"></div>
       <div class="colour-swatch" style="background:#0099ee" onclick="setColour('#0099ee','#005599',this)"></div>
       <div class="colour-swatch" style="background:#181818" onclick="setColour('#181818','#000000',this)"></div>
-      <div class="colour-swatch" style="background:#d8d8d8;border-color:#ccc" onclick="setColour('#d8d8d8','#aaaaaa',this)"></div>
+      <div class="colour-swatch" style="background:#d0d0d0;border-color:#bbb" onclick="setColour('#d0d0d0','#909090',this)"></div>
       <div class="colour-swatch" style="background:linear-gradient(135deg,#ff4444,#ffaa00,#44ee44,#0088ff,#aa00ff)" onclick="setColour('rainbow','rainbow',this)"></div>
       <div class="colour-swatch" style="background:#ffc0d8" onclick="setColour('#ffc0d8','#ff88aa',this)"></div>
     </div>
-  </div>
-
-  <!-- Cut panel -->
-  <div class="panel">
-    <h3>✂️ Cut Hair</h3>
-
-    <div class="length-label" id="lengthLabel">Rapunzel 🌟</div>
-
-    <div class="length-bar" id="lengthBar">
-      <div class="length-pip filled"></div>
-      <div class="length-pip filled"></div>
-      <div class="length-pip filled"></div>
-      <div class="length-pip filled"></div>
-      <div class="length-pip filled"></div>
-    </div>
-
-    <button class="cut-btn" id="cutBtn" onclick="cutHair()">✂️ Snip!</button>
-    <button class="grow-btn" id="growBtn" onclick="growHair()" disabled>🌱 Grow back</button>
     <button class="reset-btn" onclick="resetAll()">🔄 Start Over</button>
   </div>
-
 </div>
 
 <script>
-// ── State ────────────────────────────────────────────────
-let currentStyle = 'short';
-let hairC  = '#3d2000';
-let hairC2 = '#1e1000';
-let clipLevelIndex = 0;  // 0 = longest
+const SVG_W = 240, SVG_H = 360;
+const svg    = document.getElementById('char-svg');
+const hBack  = document.getElementById('hair-back');
+const hFront = document.getElementById('hair-front');
+const cutLine = document.getElementById('cut-line');
+const scisEl  = document.getElementById('scissors-cur');
 
-// Clip heights: y=-60 baseline, so height N clips at y = N-60
-// We want full=past bottom, then progressively shorter
-const CLIP_LEVELS = [500, 380, 310, 250, 195];
-const CLIP_LABELS = ['Rapunzel 🌟','Long 💁','Medium ✂️','Short 💇','Cropped 🌟'];
+let currentStyle = 'short', hairC = '#3d2000', hairC2 = '#1e1000';
+let dragging = false;
 
-// ── SVG helpers ───────────────────────────────────────────
-const svg   = document.getElementById('char-svg');
-const hBack = document.getElementById('hair-back');
-const hFront= document.getElementById('hair-front');
+// ── SVG coords ─────────────────────────────────────
+function svgPt(e) {
+  const rect = svg.getBoundingClientRect();
+  const src  = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left) * SVG_W / rect.width,
+    y: (src.clientY - rect.top)  * SVG_H / rect.height
+  };
+}
+function inCutZone(pt) { return pt.y > 30 && pt.y < 295; }
 
-function el(tag, attrs) {
+// ── Scissors interaction ───────────────────────────
+svg.addEventListener('mousemove', e => {
+  const pt = svgPt(e);
+  if (inCutZone(pt)) {
+    svg.classList.add('no-cursor');
+    cutLine.setAttribute('y1', pt.y); cutLine.setAttribute('y2', pt.y);
+    scisEl.setAttribute('x', Math.min(pt.x + 20, SVG_W - 12));
+    scisEl.setAttribute('y', pt.y);
+    cutLine.removeAttribute('display'); scisEl.removeAttribute('display');
+    if (dragging) applyCutAt(pt.y);
+  } else { hideCursor(); }
+});
+svg.addEventListener('mousedown', e => {
+  const pt = svgPt(e);
+  if (inCutZone(pt)) { dragging = true; applyCutAt(pt.y); e.preventDefault(); }
+});
+window.addEventListener('mouseup', () => { dragging = false; });
+svg.addEventListener('mouseleave', () => { dragging = false; hideCursor(); });
+svg.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const pt = svgPt(e);
+  if (inCutZone(pt)) {
+    cutLine.setAttribute('y1', pt.y); cutLine.setAttribute('y2', pt.y);
+    scisEl.setAttribute('x', Math.min(pt.x + 20, SVG_W - 12));
+    scisEl.setAttribute('y', pt.y);
+    cutLine.removeAttribute('display'); scisEl.removeAttribute('display');
+    applyCutAt(pt.y);
+  }
+}, { passive: false });
+svg.addEventListener('touchend', () => hideCursor());
+function hideCursor() {
+  svg.classList.remove('no-cursor');
+  cutLine.setAttribute('display','none');
+  scisEl.setAttribute('display','none');
+}
+function applyCutAt(svgY) {
+  const h = Math.max(90, Math.min(500, svgY + 60));
+  document.getElementById('clipRect').setAttribute('height', h);
+}
+function growBack() { document.getElementById('clipRect').setAttribute('height', 500); }
+
+// ── Hair drawing ───────────────────────────────────
+function el(tag, a) {
   const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  for (const [k,v] of Object.entries(a)) e.setAttribute(k,v);
   return e;
 }
-
 function isRainbow() { return hairC === 'rainbow'; }
-
 function ensureGradients() {
-  let defs = svg.querySelector('defs');
+  const defs = svg.querySelector('defs');
   defs.querySelectorAll('.hg').forEach(n => n.remove());
   if (!isRainbow()) return;
-  ['hg1','hg2'].forEach((id,i) => {
-    const g = el('linearGradient',{id, x1:'0%',y1:'0%',x2:'100%',y2:'60%'});
+  ['hg1','hg2'].forEach(id => {
+    const g = el('linearGradient',{id,x1:'0%',y1:'0%',x2:'100%',y2:'60%'});
     g.classList.add('hg');
     [['0%','#ff4444'],['25%','#ffaa00'],['50%','#44ee44'],['75%','#0088ff'],['100%','#aa00ff']]
       .forEach(([o,c]) => { const s=el('stop',{offset:o}); s.style.stopColor=c; g.appendChild(s); });
     defs.appendChild(g);
   });
 }
-
-function C()  { return isRainbow() ? 'url(#hg1)' : hairC;  }
+function C()  { return isRainbow() ? 'url(#hg1)' : hairC; }
 function C2() { return isRainbow() ? 'url(#hg2)' : hairC2; }
 
-// ── Hair drawing ──────────────────────────────────────────
+// Shared outline attrs for graphic style
+const OL = {stroke:'#2a1a00','stroke-width':'2.5','stroke-linejoin':'round'};
+function outline(attrs) { return {...attrs, ...OL}; }
+
 function drawHair() {
   ensureGradients();
-  hBack.innerHTML  = '';
-  hFront.innerHTML = '';
-
-  // Face is centred at (110, 170), rx=80, ry=88
-  // Top of face: y ≈ 82, sides: x ≈ 30 and 190
-
+  hBack.innerHTML = ''; hFront.innerHTML = '';
+  // Face: cx=120 cy=178 rx=84 ry=94; top≈84; sides≈36/204
   switch(currentStyle) {
-
     case 'short': {
-      // Back volume — slightly wider than face
-      hBack.appendChild(el('ellipse',{cx:'110',cy:'120',rx:'84',ry:'72',fill:C2()}));
-      // Front cap covering top of head
-      hFront.appendChild(el('path',{d:'M28 165 Q26 75 110 58 Q194 75 192 165 Q170 100 110 98 Q50 100 28 165Z',fill:C()}));
-      // Side pieces (not too long — bob ends around jaw)
-      hFront.appendChild(el('path',{d:'M28 165 Q12 188 20 215 Q38 208 44 185 Q36 173 28 165Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M192 165 Q208 188 200 215 Q182 208 176 185 Q184 173 192 165Z',fill:C()}));
+      hBack.appendChild(el('ellipse', outline({cx:'120',cy:'112',rx:'90',ry:'76',fill:C2()})));
+      hFront.append(
+        el('path', outline({d:'M34,168 Q32,76 120,58 Q208,76 206,168 Q184,104 120,102 Q56,104 34,168Z', fill:C()})),
+        el('path', outline({d:'M34,168 Q16,192 24,224 Q44,218 50,192 Q42,180 34,168Z', fill:C()})),
+        el('path', outline({d:'M206,168 Q224,192 216,224 Q196,218 190,192 Q198,180 206,168Z', fill:C()}))
+      );
       break;
     }
-
     case 'long': {
-      // Full back — hangs all the way down
-      hBack.appendChild(el('path',{d:'M28 158 Q10 210 16 310 Q60 335 110 336 Q160 335 204 310 Q210 210 192 158 Q168 80 110 62 Q52 80 28 158Z',fill:C2()}));
-      // Front cap
-      hFront.appendChild(el('path',{d:'M28 165 Q26 75 110 58 Q194 75 192 165 Q170 100 110 98 Q50 100 28 165Z',fill:C()}));
-      // Side curtains (front layer, slightly lighter)
-      hFront.appendChild(el('path',{d:'M28 165 Q10 215 16 305 Q42 295 44 185 Q36 173 28 165Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M192 165 Q210 215 204 305 Q178 295 176 185 Q184 173 192 165Z',fill:C()}));
+      hBack.appendChild(el('path', outline({d:'M34,162 Q12,222 18,332 Q64,356 120,357 Q176,356 222,332 Q228,222 206,162 Q184,78 120,60 Q56,78 34,162Z', fill:C2()})));
+      hFront.append(
+        el('path', outline({d:'M34,168 Q32,76 120,58 Q208,76 206,168 Q184,104 120,102 Q56,104 34,168Z', fill:C()})),
+        el('path', outline({d:'M34,162 Q12,224 18,326 Q46,316 50,192 Q42,180 34,162Z', fill:C()})),
+        el('path', outline({d:'M206,162 Q228,224 222,326 Q194,316 190,192 Q198,180 206,162Z', fill:C()}))
+      );
       break;
     }
-
     case 'curly': {
-      // Back poof
-      hBack.appendChild(el('ellipse',{cx:'110',cy:'108',rx:'92',ry:'82',fill:C2()}));
-      // Poof bumps around head
-      const bumpCoords = [
-        [40,82,26],[70,62,24],[110,54,28],[150,62,24],[180,82,26],
-        [28,130,22],[192,130,22]
-      ];
-      bumpCoords.forEach(([x,y,r]) => hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C2()})));
-      // Front cap
-      hFront.appendChild(el('path',{d:'M30 162 Q28 76 110 58 Q192 76 190 162 Q168 102 110 100 Q52 102 30 162Z',fill:C()}));
-      // Side curl blobs
-      [[22,170,20],[24,198,18],[30,225,16],[198,170,20],[196,198,18],[190,225,16]].forEach(([x,y,r]) => {
-        hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C()}));
-      });
-      // Bottom curl row
-      [[55,285,18],[88,295,16],[110,298,17],[132,295,16],[165,285,18]].forEach(([x,y,r]) => {
-        hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C()}));
-      });
+      hBack.appendChild(el('ellipse', outline({cx:'120',cy:'104',rx:'96',ry:'84',fill:C2()})));
+      [[42,80,28],[76,60,26],[120,52,30],[164,60,26],[198,80,28],[26,130,24],[214,130,24]]
+        .forEach(([x,y,r]) => hFront.appendChild(el('circle', outline({cx:x,cy:y,r,fill:C2()}))));
+      hFront.appendChild(el('path', outline({d:'M32,164 Q30,76 120,58 Q210,76 208,164 Q184,102 120,100 Q56,102 32,164Z', fill:C()})));
+      [[20,174,22],[20,202,20],[26,230,18],[220,174,22],[220,202,20],[214,230,18]]
+        .forEach(([x,y,r]) => hFront.appendChild(el('circle', outline({cx:x,cy:y,r,fill:C()}))));
+      [[56,292,20],[90,302,18],[120,306,19],[150,302,18],[184,292,20]]
+        .forEach(([x,y,r]) => hFront.appendChild(el('circle', outline({cx:x,cy:y,r,fill:C()}))));
       break;
     }
-
     case 'bun': {
-      // Bun on top — NOT clipped (sits above face)
-      hBack.appendChild(el('circle',{cx:'110',cy:'48',r:'38',fill:C2()}));
-      // Front cap (shorter sides)
-      hFront.appendChild(el('path',{d:'M32 160 Q30 80 110 64 Q190 80 188 160 Q168 105 110 103 Q52 105 32 160Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M32 160 Q18 180 26 206 Q44 200 46 178 Q40 168 32 160Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M188 160 Q202 180 194 206 Q176 200 174 178 Q180 168 188 160Z',fill:C()}));
-      // Bun front circle with highlight
-      hFront.appendChild(el('circle',{cx:'110',cy:'48',r:'38',fill:C()}));
-      hFront.appendChild(el('ellipse',{cx:'100',cy:'36',rx:'13',ry:'9',fill:'rgba(255,255,255,0.2)'}));
-      // Hair tie
-      hFront.appendChild(el('ellipse',{cx:'110',cy:'84',rx:'12',ry:'6',fill:C2()}));
+      hBack.appendChild(el('circle', outline({cx:'120',cy:'42',r:'42',fill:C2()})));
+      hFront.append(
+        el('path', outline({d:'M36,162 Q34,78 120,62 Q206,78 204,162 Q180,104 120,102 Q60,104 36,162Z', fill:C()})),
+        el('path', outline({d:'M36,162 Q20,184 28,214 Q46,208 50,184 Q44,172 36,162Z', fill:C()})),
+        el('path', outline({d:'M204,162 Q220,184 212,214 Q194,208 190,184 Q196,172 204,162Z', fill:C()})),
+        el('circle', outline({cx:'120',cy:'42',r:'42',fill:C()})),
+        el('ellipse',{cx:'108',cy:'30',rx:'16',ry:'10',fill:'rgba(255,255,255,0.22)'}),
+        el('ellipse', outline({cx:'120',cy:'82',rx:'15',ry:'7',fill:C2()}))
+      );
       break;
     }
-
     case 'pigtails': {
-      // Back: two big tails going wide + down
-      hBack.appendChild(el('path',{d:'M30 155 Q-8 180 4 290 Q26 305 42 268 Q22 235 34 182 Q32 168 30 155Z',fill:C2()}));
-      hBack.appendChild(el('path',{d:'M190 155 Q228 180 216 290 Q194 305 178 268 Q198 235 186 182 Q188 168 190 155Z',fill:C2()}));
-      // Top cap
-      hFront.appendChild(el('path',{d:'M30 162 Q28 78 110 62 Q192 78 190 162 Q168 102 110 100 Q52 102 30 162Z',fill:C()}));
-      // Tail fronts
-      hFront.appendChild(el('path',{d:'M30 155 Q-8 178 4 286 Q26 298 42 264 Q22 232 34 180 Q32 166 30 155Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M190 155 Q228 178 216 286 Q194 298 178 264 Q198 232 186 180 Q188 166 190 155Z',fill:C()}));
-      // Hair ties
-      hFront.appendChild(el('ellipse',{cx:'34', cy:'165',rx:'10',ry:'6',fill:'#ff66aa'}));
-      hFront.appendChild(el('ellipse',{cx:'186',cy:'165',rx:'10',ry:'6',fill:'#ff66aa'}));
+      hBack.append(
+        el('path', outline({d:'M34,156 Q-10,184 4,302 Q26,316 46,276 Q22,244 36,184 Q34,168 34,156Z', fill:C2()})),
+        el('path', outline({d:'M206,156 Q250,184 236,302 Q214,316 194,276 Q218,244 204,184 Q206,168 206,156Z', fill:C2()}))
+      );
+      hFront.append(
+        el('path', outline({d:'M34,162 Q32,78 120,60 Q208,78 206,162 Q184,102 120,100 Q56,102 34,162Z', fill:C()})),
+        el('path', outline({d:'M34,156 Q-10,180 4,298 Q26,310 46,272 Q22,240 36,182 Q34,168 34,156Z', fill:C()})),
+        el('path', outline({d:'M206,156 Q250,180 236,298 Q214,310 194,272 Q218,240 204,182 Q206,168 206,156Z', fill:C()})),
+        el('ellipse', outline({cx:'36', cy:'168',rx:'13',ry:'7',fill:'#ff66aa'})),
+        el('ellipse', outline({cx:'204',cy:'168',rx:'13',ry:'7',fill:'#ff66aa'}))
+      );
       break;
     }
-
     case 'ponytail': {
-      // Tail hangs from back
-      hBack.appendChild(el('path',{d:'M96 78 Q110 62 124 78 Q138 180 130 295 Q110 308 90 295 Q82 180 96 78Z',fill:C2()}));
-      hBack.appendChild(el('path',{d:'M100 80 Q110 66 120 80 Q132 175 126 290 Q110 302 94 290 Q88 175 100 80Z',fill:C()}));
-      // Front cap
-      hFront.appendChild(el('path',{d:'M32 162 Q30 78 110 62 Q190 78 188 162 Q166 104 110 102 Q54 104 32 162Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M32 162 Q18 182 24 208 Q42 202 44 180 Q38 170 32 162Z',fill:C()}));
-      hFront.appendChild(el('path',{d:'M188 162 Q202 182 196 208 Q178 202 176 180 Q182 170 188 162Z',fill:C()}));
-      // Hair tie
-      hFront.appendChild(el('rect',{x:'100',y:'86',width:'20',height:'10',rx:'5',fill:'#ff66aa'}));
+      hBack.append(
+        el('path', outline({d:'M104,78 Q120,60 136,78 Q152,194 144,310 Q120,322 96,310 Q88,194 104,78Z', fill:C2()})),
+        el('path', outline({d:'M108,80 Q120,64 132,80 Q146,192 140,306 Q120,316 100,306 Q94,192 108,80Z', fill:C()}))
+      );
+      hFront.append(
+        el('path', outline({d:'M36,162 Q34,78 120,60 Q206,78 204,162 Q180,104 120,102 Q60,104 36,162Z', fill:C()})),
+        el('path', outline({d:'M36,162 Q20,182 26,212 Q44,206 48,182 Q42,172 36,162Z', fill:C()})),
+        el('path', outline({d:'M204,162 Q220,182 214,212 Q196,206 192,182 Q198,172 204,162Z', fill:C()})),
+        el('rect', outline({x:'110',y:'84',width:'20',height:'12',rx:'6',fill:'#ff66aa'}))
+      );
       break;
     }
   }
 }
 
-// ── Clip / cut logic ─────────────────────────────────────
-function applyClip() {
-  document.getElementById('clipRect').setAttribute('height', CLIP_LEVELS[clipLevelIndex]);
-  // Bun: never clip the top circle — remove clip from hFront for bun
-  // (handled via the SVG structure; bun top is drawn last in hFront anyway)
-}
-
-function updateCutUI() {
-  const pips   = document.querySelectorAll('.length-pip');
-  const filled = CLIP_LEVELS.length - clipLevelIndex;
-  pips.forEach((p,i) => p.classList.toggle('filled', i < filled));
-  document.getElementById('lengthLabel').textContent = CLIP_LABELS[clipLevelIndex];
-  document.getElementById('cutBtn').disabled  = clipLevelIndex >= CLIP_LEVELS.length - 1;
-  document.getElementById('growBtn').disabled = clipLevelIndex === 0;
-}
-
-function cutHair() {
-  if (clipLevelIndex >= CLIP_LEVELS.length - 1) return;
-  clipLevelIndex++;
-  applyClip();
-  updateCutUI();
-  // Snip animation
-  const snip = document.getElementById('snip-emoji');
-  snip.classList.remove('pop');
-  void snip.offsetWidth; // reflow
-  snip.classList.add('pop');
-}
-
-function growHair() {
-  if (clipLevelIndex === 0) return;
-  clipLevelIndex--;
-  applyClip();
-  updateCutUI();
-}
-
-// ── Style / colour setters ────────────────────────────────
 function setStyle(style, btn) {
   currentStyle = style;
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  drawHair();
+  btn.classList.add('active'); drawHair();
 }
-
 function setColour(c, c2, swatch) {
   hairC = c; hairC2 = c2;
   document.querySelectorAll('.colour-swatch').forEach(s => s.classList.remove('active'));
-  swatch.classList.add('active');
-  drawHair();
+  swatch.classList.add('active'); drawHair();
 }
-
 function resetAll() {
-  currentStyle   = 'short';
-  hairC          = '#3d2000';
-  hairC2         = '#1e1000';
-  clipLevelIndex = 0;
+  currentStyle = 'short'; hairC = '#3d2000'; hairC2 = '#1e1000';
+  document.getElementById('clipRect').setAttribute('height', 500);
   document.querySelectorAll('.style-btn').forEach(b => b.classList.toggle('active', b.dataset.style==='short'));
   document.querySelectorAll('.colour-swatch').forEach((s,i) => s.classList.toggle('active', i===0));
-  applyClip();
-  updateCutUI();
   drawHair();
 }
 
-// ── Init ─────────────────────────────────────────────────
-applyClip();
-updateCutUI();
 drawHair();
 </script>
 </body>
