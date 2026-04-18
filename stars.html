@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Stars ⭐</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(180deg, #1a0533 0%, #3d0066 50%, #6600aa 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    #hud {
+      display: flex;
+      gap: 30px;
+      padding: 14px 30px;
+      width: 100%;
+      max-width: 520px;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .hud-box {
+      text-align: center;
+    }
+
+    .hud-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.7;
+    }
+
+    .hud-value {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    #lives-display { font-size: 1.4rem; }
+
+    canvas {
+      border-radius: 16px;
+      border: 3px solid rgba(255,255,255,0.2);
+      box-shadow: 0 0 60px rgba(180,0,255,0.4);
+      touch-action: none;
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20,0,40,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .overlay h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      color: #ffdd00;
+      text-shadow: 3px 3px 0 #e65c00;
+      margin-bottom: 12px;
+    }
+
+    .overlay p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+
+    .big-score {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3rem;
+      color: #ff80ff;
+      margin: 10px 0 20px;
+    }
+
+    .btn {
+      padding: 14px 40px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #ff6eb4, #ff3399);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #cc0066;
+      transition: transform 0.1s, box-shadow 0.1s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { filter: brightness(1.1); }
+    .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #cc0066; }
+
+    #back { position: fixed; top: 12px; left: 16px; text-decoration: none; color: white; font-size: 1.5rem; z-index: 20; opacity: 0.7; }
+    #back:hover { opacity: 1; }
+
+    #controls-hint {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" id="back">← Back</a>
+
+<div id="hud">
+  <div class="hud-box">
+    <div class="hud-label">Score</div>
+    <div class="hud-value" id="score-display">0</div>
+  </div>
+  <div class="hud-box">
+    <div class="hud-label">Level</div>
+    <div class="hud-value" id="level-display">1</div>
+  </div>
+  <div class="hud-box">
+    <div class="hud-label">Lives</div>
+    <div id="lives-display">❤️❤️❤️</div>
+  </div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+<div id="controls-hint">← → arrow keys or tap sides to move</div>
+
+<!-- Start overlay -->
+<div class="overlay" id="startOverlay">
+  <h2>⭐ Catch the Stars! ⭐</h2>
+  <p>Move the basket to catch falling stars.</p>
+  <p>Don't let them hit the ground!</p>
+  <button class="btn" onclick="startGame()">Start Game!</button>
+</div>
+
+<!-- Game over overlay -->
+<div class="overlay" id="gameOverOverlay" style="display:none">
+  <h2>Game Over! 🌙</h2>
+  <p>Your score:</p>
+  <div class="big-score" id="final-score">0</div>
+  <button class="btn" onclick="startGame()">Play Again!</button>
+  <a href="index.html" class="btn" style="margin-top:10px; background: linear-gradient(135deg,#bf5fff,#8800cc); box-shadow: 0 5px 0 #5500aa;">🏠 Home</a>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Size canvas
+function resize() {
+  const maxW = Math.min(window.innerWidth - 10, 500);
+  const maxH = window.innerHeight - 130;
+  canvas.width  = maxW;
+  canvas.height = Math.min(maxH, 600);
+}
+resize();
+window.addEventListener('resize', () => { resize(); });
+
+// Game state
+let score, lives, level, stars, particles, basket, frameCount, gameRunning, animId;
+
+const BASKET_W = 90;
+const BASKET_H = 40;
+const BASKET_SPEED = 7;
+
+// Input
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key] = true);
+window.addEventListener('keyup',   e => keys[e.key] = false);
+
+// Touch / mouse drag
+let touchX = null;
+canvas.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+canvas.addEventListener('touchmove',  e => {
+  if (touchX === null) return;
+  const dx = e.touches[0].clientX - touchX;
+  touchX = e.touches[0].clientX;
+  basket.x = Math.max(0, Math.min(canvas.width - BASKET_W, basket.x + dx));
+}, { passive: true });
+canvas.addEventListener('touchend', () => { touchX = null; });
+
+canvas.addEventListener('mousemove', e => {
+  if (!gameRunning) return;
+  const rect = canvas.getBoundingClientRect();
+  basket.x = Math.max(0, Math.min(canvas.width - BASKET_W, e.clientX - rect.left - BASKET_W / 2));
+});
+
+function startGame() {
+  document.getElementById('startOverlay').style.display    = 'none';
+  document.getElementById('gameOverOverlay').style.display = 'none';
+  score      = 0;
+  lives      = 3;
+  level      = 1;
+  stars      = [];
+  particles  = [];
+  frameCount = 0;
+  basket     = { x: canvas.width / 2 - BASKET_W / 2, y: canvas.height - BASKET_H - 10 };
+  gameRunning = true;
+  if (animId) cancelAnimationFrame(animId);
+  loop();
+}
+
+function spawnStar() {
+  const types = [
+    { emoji: '⭐', points: 1, speed: 2 + level * 0.4, size: 28 },
+    { emoji: '🌟', points: 2, speed: 3 + level * 0.5, size: 26 },
+    { emoji: '💫', points: 3, speed: 4 + level * 0.6, size: 24 },
+    { emoji: '✨', points: 5, speed: 5 + level * 0.8, size: 22 },
+  ];
+  const t = types[Math.floor(Math.random() * (level < 3 ? 2 : types.length))];
+  stars.push({
+    x: Math.random() * (canvas.width - 40) + 20,
+    y: -30,
+    ...t,
+    rotation: 0,
+    rotSpeed: (Math.random() - 0.5) * 0.1,
+  });
+}
+
+function spawnParticles(x, y, count, colour) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      colour,
+      size: 4 + Math.random() * 6,
+    });
+  }
+}
+
+function updateLivesDisplay() {
+  document.getElementById('lives-display').textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0, 3 - lives));
+}
+
+function loop() {
+  frameCount++;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  grad.addColorStop(0, '#0d001a');
+  grad.addColorStop(1, '#2a0044');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Spawn stars
+  const spawnRate = Math.max(30, 70 - level * 5);
+  if (frameCount % spawnRate === 0) spawnStar();
+
+  // Level up
+  if (score >= level * 20) level++;
+  document.getElementById('level-display').textContent = level;
+  document.getElementById('score-display').textContent = score;
+
+  // Move basket via keys
+  if (keys['ArrowLeft']  || keys['a']) basket.x = Math.max(0, basket.x - BASKET_SPEED);
+  if (keys['ArrowRight'] || keys['d']) basket.x = Math.min(canvas.width - BASKET_W, basket.x + BASKET_SPEED);
+
+  // Update & draw stars
+  ctx.font = '28px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  for (let i = stars.length - 1; i >= 0; i--) {
+    const s = stars[i];
+    s.y += s.speed;
+    s.rotation += s.rotSpeed;
+
+    // Caught?
+    if (
+      s.y + s.size / 2 >= basket.y &&
+      s.y - s.size / 2 <= basket.y + BASKET_H &&
+      s.x >= basket.x - 5 &&
+      s.x <= basket.x + BASKET_W + 5
+    ) {
+      score += s.points;
+      spawnParticles(s.x, s.y, 10, '#ffdd00');
+      stars.splice(i, 1);
+      continue;
+    }
+
+    // Missed
+    if (s.y > canvas.height + 30) {
+      lives--;
+      updateLivesDisplay();
+      spawnParticles(s.x, canvas.height - 20, 6, '#ff4466');
+      stars.splice(i, 1);
+      if (lives <= 0) { gameOver(); return; }
+      continue;
+    }
+
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.rotation);
+    ctx.font = s.size + 'px serif';
+    ctx.fillText(s.emoji, 0, 0);
+    ctx.restore();
+  }
+
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.15;
+    p.life -= 0.03;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.colour;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // Draw basket
+  const bx = basket.x, by = basket.y;
+  ctx.save();
+  // Shadow
+  ctx.shadowColor = 'rgba(255,100,200,0.5)';
+  ctx.shadowBlur = 15;
+  // Basket body
+  const basketGrad = ctx.createLinearGradient(bx, by, bx, by + BASKET_H);
+  basketGrad.addColorStop(0, '#ff80cc');
+  basketGrad.addColorStop(1, '#cc0066');
+  ctx.fillStyle = basketGrad;
+  ctx.beginPath();
+  ctx.moveTo(bx + 8, by);
+  ctx.lineTo(bx + BASKET_W - 8, by);
+  ctx.quadraticCurveTo(bx + BASKET_W, by, bx + BASKET_W, by + 8);
+  ctx.lineTo(bx + BASKET_W - 4, by + BASKET_H);
+  ctx.lineTo(bx + 4, by + BASKET_H);
+  ctx.lineTo(bx, by + 8);
+  ctx.quadraticCurveTo(bx, by, bx + 8, by);
+  ctx.closePath();
+  ctx.fill();
+  // Rim
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = '#ff99dd';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(bx, by + 5);
+  ctx.lineTo(bx + BASKET_W, by + 5);
+  ctx.stroke();
+  // Weave lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1.5;
+  for (let wx = bx + 15; wx < bx + BASKET_W - 10; wx += 15) {
+    ctx.beginPath();
+    ctx.moveTo(wx, by + 8);
+    ctx.lineTo(wx - 4, by + BASKET_H);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Ground line
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height - 5);
+  ctx.lineTo(canvas.width, canvas.height - 5);
+  ctx.stroke();
+
+  animId = requestAnimationFrame(loop);
+}
+
+function gameOver() {
+  gameRunning = false;
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('gameOverOverlay').style.display = 'flex';
+}
+</script>
+</body>
+</html>

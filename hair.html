@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hair Salon 💇‍♀️</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f9c6e8 0%, #e8aaff 100%);
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 10px 30px;
+    }
+
+    header {
+      text-align: center;
+      padding: 10px 0 8px;
+      width: 100%;
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.6rem, 6vw, 2.6rem);
+      color: #c030a0;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+    }
+
+    #back {
+      position: fixed; top: 12px; left: 14px;
+      text-decoration: none; color: #c030a0;
+      font-size: 1.4rem; font-weight: 700; z-index: 20;
+      background: rgba(255,255,255,0.6); border-radius: 50px;
+      padding: 4px 12px;
+    }
+
+    .studio {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      max-width: 820px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Character */
+    #char-wrap {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 6px 20px rgba(180,0,180,0.15);
+      padding: 20px;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #char-svg { width: 240px; height: 340px; overflow: visible; }
+
+    /* Panels */
+    .panel {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(180,0,180,0.12);
+      flex: 1 1 200px;
+      min-width: 180px;
+      max-width: 280px;
+    }
+
+    .panel h3 {
+      font-family: 'Fredoka One', cursive;
+      color: #b030c0;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .style-btn {
+      border: 2.5px solid #e0b0f0;
+      border-radius: 12px;
+      background: #fdf0ff;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #880088;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .style-btn .icon { font-size: 1.6rem; }
+    .style-btn:hover { border-color: #c040d0; background: #f5d0ff; }
+    .style-btn.active { border-color: #c040d0; background: linear-gradient(135deg,#f5d0ff,#e0a0ff); box-shadow: 0 2px 8px rgba(180,0,220,0.3); }
+
+    .colour-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .colour-swatch {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .colour-swatch:hover   { transform: scale(1.15); }
+    .colour-swatch.active  { border-color: #440044; transform: scale(1.1); }
+
+    .acc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .acc-btn {
+      border: 2px solid #e0b0f0;
+      border-radius: 10px;
+      background: #fdf0ff;
+      padding: 6px 2px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 1.5rem;
+      transition: all 0.15s;
+    }
+
+    .acc-btn:hover  { background: #f0d0ff; border-color: #c040d0; }
+    .acc-btn.active { background: linear-gradient(135deg,#f0c0ff,#d890ff); border-color: #b030c0; }
+
+    .reset-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #ff80cc, #cc0080);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #880055;
+    }
+
+    .reset-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #880055; }
+  </style>
+</head>
+<body>
+
+<a href="index.html" id="back">← Back</a>
+
+<header><h1>💇‍♀️ Hair Salon 💇‍♀️</h1></header>
+
+<div class="studio">
+
+  <!-- Character display -->
+  <div id="char-wrap">
+    <svg id="char-svg" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- HAIR BACK (behind face) -->
+      <g id="hair-back"></g>
+
+      <!-- NECK -->
+      <rect x="103" y="245" width="34" height="40" rx="10" fill="#FDDBB4"/>
+
+      <!-- SHOULDERS -->
+      <ellipse cx="120" cy="315" rx="75" ry="35" fill="#ff99cc"/>
+
+      <!-- FACE -->
+      <ellipse cx="120" cy="175" rx="82" ry="95" fill="#FDDBB4"/>
+
+      <!-- EARS -->
+      <ellipse cx="40"  cy="175" rx="18" ry="22" fill="#FDDBB4"/>
+      <ellipse cx="200" cy="175" rx="18" ry="22" fill="#FDDBB4"/>
+      <ellipse cx="40"  cy="175" rx="10" ry="13" fill="#f5c49e"/>
+      <ellipse cx="200" cy="175" rx="10" ry="13" fill="#f5c49e"/>
+
+      <!-- EYE WHITES -->
+      <ellipse cx="90"  cy="160" rx="20" ry="18" fill="white"/>
+      <ellipse cx="150" cy="160" rx="20" ry="18" fill="white"/>
+
+      <!-- EYESHADOW (hidden by default) -->
+      <ellipse id="eyeshadow-l" cx="90"  cy="158" rx="20" ry="14" fill="transparent" opacity="0.45"/>
+      <ellipse id="eyeshadow-r" cx="150" cy="158" rx="20" ry="14" fill="transparent" opacity="0.45"/>
+
+      <!-- IRISES -->
+      <circle cx="90"  cy="162" r="12" fill="#5B3A29"/>
+      <circle cx="150" cy="162" r="12" fill="#5B3A29"/>
+      <!-- PUPILS -->
+      <circle cx="90"  cy="162" r="7"  fill="#1a0a00"/>
+      <circle cx="150" cy="162" r="7"  fill="#1a0a00"/>
+      <!-- SHINE -->
+      <circle cx="94"  cy="157" r="3.5" fill="white"/>
+      <circle cx="154" cy="157" r="3.5" fill="white"/>
+
+      <!-- LASHES -->
+      <path d="M72 148 Q80 140 90 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M108 148 Q100 140 90 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M132 148 Q140 140 150 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M168 148 Q160 140 150 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- EYEBROWS -->
+      <path id="brow-l" d="M72 138 Q90 128 108 138" stroke="#5B3A29" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path id="brow-r" d="M132 138 Q150 128 168 138" stroke="#5B3A29" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+      <!-- NOSE -->
+      <ellipse cx="120" cy="195" rx="9" ry="7" fill="#f5c49e"/>
+      <circle cx="114" cy="198" r="4" fill="#edb88a"/>
+      <circle cx="126" cy="198" r="4" fill="#edb88a"/>
+
+      <!-- BLUSH -->
+      <ellipse id="blush-l" cx="68"  cy="192" rx="18" ry="12" fill="#ffb3c6" opacity="0"/>
+      <ellipse id="blush-r" cx="172" cy="192" rx="18" ry="12" fill="#ffb3c6" opacity="0"/>
+
+      <!-- MOUTH -->
+      <path id="lips" d="M98 220 Q110 215 120 218 Q130 215 142 220 Q130 235 120 237 Q110 235 98 220Z" fill="#e8667a"/>
+      <path d="M98 220 Q120 228 142 220" stroke="#c04060" stroke-width="1.5" fill="none"/>
+
+      <!-- HAIR FRONT -->
+      <g id="hair-front"></g>
+
+      <!-- ACCESSORIES -->
+      <g id="accessories"></g>
+    </svg>
+  </div>
+
+  <!-- Style panel -->
+  <div class="panel">
+    <h3>✂️ Hairstyle</h3>
+    <div class="style-grid" id="style-grid">
+      <button class="style-btn active" data-style="short" onclick="setStyle('short',this)">
+        <span class="icon">💆</span>Short Bob
+      </button>
+      <button class="style-btn" data-style="long" onclick="setStyle('long',this)">
+        <span class="icon">👩</span>Long &amp; Straight
+      </button>
+      <button class="style-btn" data-style="curly" onclick="setStyle('curly',this)">
+        <span class="icon">🌀</span>Curly
+      </button>
+      <button class="style-btn" data-style="bun" onclick="setStyle('bun',this)">
+        <span class="icon">🍩</span>Top Bun
+      </button>
+      <button class="style-btn" data-style="pigtails" onclick="setStyle('pigtails',this)">
+        <span class="icon">🎀</span>Pigtails
+      </button>
+      <button class="style-btn" data-style="ponytail" onclick="setStyle('ponytail',this)">
+        <span class="icon">🐴</span>Ponytail
+      </button>
+    </div>
+
+    <h3 style="margin-top:16px">🎨 Colour</h3>
+    <div class="colour-grid" id="colour-grid">
+      <div class="colour-swatch active" style="background:#4a2800" title="Dark Brown" onclick="setColour('#4a2800','#2a1400',this)"></div>
+      <div class="colour-swatch" style="background:#8B4513" title="Brown" onclick="setColour('#8B4513','#5c2d0a',this)"></div>
+      <div class="colour-swatch" style="background:#c8a060" title="Blonde" onclick="setColour('#c8a060','#a07830',this)"></div>
+      <div class="colour-swatch" style="background:#f0e060" title="Light Blonde" onclick="setColour('#f0e060','#c0b030',this)"></div>
+      <div class="colour-swatch" style="background:#cc2200" title="Red" onclick="setColour('#cc2200','#880000',this)"></div>
+      <div class="colour-swatch" style="background:#ff66aa" title="Pink" onclick="setColour('#ff66aa','#cc3366',this)"></div>
+      <div class="colour-swatch" style="background:#9933ff" title="Purple" onclick="setColour('#9933ff','#6600cc',this)"></div>
+      <div class="colour-swatch" style="background:#0099ff" title="Blue" onclick="setColour('#0099ff','#0066cc',this)"></div>
+      <div class="colour-swatch" style="background:#222222" title="Black" onclick="setColour('#222222','#000000',this)"></div>
+      <div class="colour-swatch" style="background:#ffffff;border-color:#ddd" title="White/Silver" onclick="setColour('#e8e8e8','#cccccc',this)"></div>
+      <div class="colour-swatch" style="background:linear-gradient(135deg,#ff4444,#ffaa00,#44ff44,#0088ff,#aa00ff)" title="Rainbow" onclick="setColour('rainbow','rainbow',this)"></div>
+      <div class="colour-swatch" style="background:linear-gradient(135deg,#ff88cc,#ffccee)" title="Pastel Pink" onclick="setColour('#ffbbdd','#ff88bb',this)"></div>
+    </div>
+  </div>
+
+  <!-- Accessories panel -->
+  <div class="panel">
+    <h3>💎 Accessories</h3>
+    <div class="acc-grid" id="acc-grid">
+      <button class="acc-btn" data-acc="bow"      onclick="toggleAcc('bow',this)"     title="Bow">🎀</button>
+      <button class="acc-btn" data-acc="tiara"    onclick="toggleAcc('tiara',this)"   title="Tiara">👑</button>
+      <button class="acc-btn" data-acc="flower"   onclick="toggleAcc('flower',this)"  title="Flower">🌸</button>
+      <button class="acc-btn" data-acc="stars"    onclick="toggleAcc('stars',this)"   title="Stars">⭐</button>
+      <button class="acc-btn" data-acc="glasses"  onclick="toggleAcc('glasses',this)" title="Glasses">👓</button>
+      <button class="acc-btn" data-acc="headband" onclick="toggleAcc('headband',this)"title="Headband">🎗️</button>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">🔄 Start Over</button>
+  </div>
+
+</div>
+
+<script>
+// State
+let currentStyle  = 'short';
+let hairColour    = '#4a2800';
+let hairColour2   = '#2a1400';
+let activeAccs    = new Set();
+const isRainbow   = () => hairColour === 'rainbow';
+
+const hairBack  = document.getElementById('hair-back');
+const hairFront = document.getElementById('hair-front');
+const accGroup  = document.getElementById('accessories');
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function rainbowId(id) {
+  const grad = svgEl('linearGradient', { id, x1:'0%', y1:'0%', x2:'100%', y2:'0%' });
+  [['0%','#ff4444'],['20%','#ffaa00'],['40%','#ffee00'],['60%','#44ff44'],['80%','#0088ff'],['100%','#aa00ff']].forEach(([o,c]) => {
+    const s = svgEl('stop', { offset: o }); s.style.stopColor = c; grad.appendChild(s);
+  });
+  return grad;
+}
+
+function getColour(id='hc') {
+  if (isRainbow()) return `url(#${id})`;
+  return hairColour;
+}
+
+function getColour2() {
+  if (isRainbow()) return `url(#hc2)`;
+  return hairColour2;
+}
+
+function injectGradients(svg) {
+  if (!isRainbow()) return;
+  let defs = svg.querySelector('defs');
+  if (!defs) { defs = svgEl('defs',{}); svg.prepend(defs); }
+  defs.querySelectorAll('.hgrad').forEach(e => e.remove());
+  ['hc','hc2'].forEach(id => {
+    const g = rainbowId(id); g.classList.add('hgrad'); defs.appendChild(g);
+  });
+}
+
+function drawHair() {
+  const svg = document.getElementById('char-svg');
+  injectGradients(svg);
+  const c  = getColour();
+  const c2 = getColour2();
+  hairBack.innerHTML = '';
+  hairFront.innerHTML = '';
+
+  switch(currentStyle) {
+    case 'short': {
+      // Back: slight volume behind
+      const back = svgEl('ellipse', {cx:'120',cy:'115',rx:'88',ry:'75',fill:c2});
+      hairBack.appendChild(back);
+      // Front: cap shape
+      const cap = svgEl('path', {d:'M38 148 Q36 80 120 62 Q204 80 202 148 Q180 100 120 98 Q60 100 38 148Z', fill:c});
+      // Side flicks
+      const sideL = svgEl('path', {d:'M38 148 Q20 175 30 200 Q50 195 58 175 Q50 155 38 148Z', fill:c});
+      const sideR = svgEl('path', {d:'M202 148 Q220 175 210 200 Q190 195 182 175 Q190 155 202 148Z', fill:c});
+      hairFront.append(cap, sideL, sideR);
+      break;
+    }
+    case 'long': {
+      const back = svgEl('path', {d:'M36 140 Q20 200 30 310 Q75 330 120 330 Q165 330 210 310 Q220 200 204 140 Q180 90 120 70 Q60 90 36 140Z', fill:c2});
+      hairBack.appendChild(back);
+      const top = svgEl('path', {d:'M38 148 Q36 80 120 62 Q204 80 202 148 Q180 100 120 98 Q60 100 38 148Z', fill:c});
+      const sideL = svgEl('path', {d:'M36 140 Q15 200 28 310 Q60 295 58 175 Q50 155 36 140Z', fill:c});
+      const sideR = svgEl('path', {d:'M204 140 Q225 200 212 310 Q180 295 182 175 Q190 155 204 140Z', fill:c});
+      hairFront.append(top, sideL, sideR);
+      break;
+    }
+    case 'curly': {
+      const back = svgEl('ellipse', {cx:'120',cy:'110',rx:'95',ry:'82',fill:c2});
+      hairBack.appendChild(back);
+      const top = svgEl('path', {d:'M32 148 Q30 72 120 55 Q210 72 208 148 Q185 95 120 92 Q55 95 32 148Z', fill:c});
+      // Curl blobs
+      const curls = [
+        [30,170,22],[28,205,20],[35,238,18],[208,168,22],[212,204,20],[205,237,18],
+        [55,285,20],[90,295,18],[120,298,18],[150,295,18],[185,285,20]
+      ];
+      curls.forEach(([cx,cy,r]) => {
+        hairFront.appendChild(svgEl('circle', {cx,cy,r,fill:c}));
+      });
+      hairFront.appendChild(top);
+      break;
+    }
+    case 'bun': {
+      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
+      const sideL = svgEl('path', {d:'M42 148 Q28 175 36 205 Q56 198 60 174 Q52 158 42 148Z', fill:c});
+      const sideR = svgEl('path', {d:'M198 148 Q212 175 204 205 Q184 198 180 174 Q188 158 198 148Z', fill:c});
+      const bunCirc = svgEl('circle', {cx:'120',cy:'52',r:'38',fill:c});
+      const bunShad = svgEl('circle', {cx:'120',cy:'52',r:'38',fill:'none',stroke:c2,'stroke-width':'4'});
+      const bunHigh = svgEl('ellipse', {cx:'108',cy:'42',rx:'12',ry:'8',fill:'rgba(255,255,255,0.2)'});
+      hairFront.append(top, sideL, sideR, bunCirc, bunShad, bunHigh);
+      break;
+    }
+    case 'pigtails': {
+      const back = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q180 100 120 98 Q60 100 42 148Z', fill:c2});
+      hairBack.appendChild(back);
+      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
+      // Left pigtail
+      const ptL = svgEl('path', {d:'M36 155 Q-5 180 10 260 Q30 275 45 240 Q25 215 40 180 Q42 166 36 155Z', fill:c});
+      // Right pigtail
+      const ptR = svgEl('path', {d:'M204 155 Q245 180 230 260 Q210 275 195 240 Q215 215 200 180 Q198 166 204 155Z', fill:c});
+      // Bows/ties
+      const bowL = svgEl('text', {x:'10', y:'180', 'font-size':'22', 'text-anchor':'middle'}); bowL.textContent = '🎀';
+      const bowR = svgEl('text', {x:'228',y:'180', 'font-size':'22', 'text-anchor':'middle'}); bowR.textContent = '🎀';
+      hairFront.append(top, ptL, ptR, bowL, bowR);
+      break;
+    }
+    case 'ponytail': {
+      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
+      const sideL = svgEl('path', {d:'M42 148 Q28 172 36 202 Q56 196 60 172 Q52 158 42 148Z', fill:c});
+      const sideR = svgEl('path', {d:'M198 148 Q212 172 204 202 Q184 196 180 172 Q188 158 198 148Z', fill:c});
+      // Tail going back and down
+      const tailBack = svgEl('path', {d:'M100 78 Q120 65 140 78 Q155 200 145 290 Q120 305 95 290 Q85 200 100 78Z', fill:c2});
+      hairBack.appendChild(tailBack);
+      const tailFront = svgEl('path', {d:'M105 80 Q120 68 135 80 Q148 190 140 285 Q120 298 100 285 Q92 190 105 80Z', fill:c});
+      const tie = svgEl('rect', {x:'108',y:'92',width:'24',height:'12',rx:'6',fill:'#ff66aa'});
+      hairFront.append(top, sideL, sideR, tailFront, tie);
+      break;
+    }
+  }
+}
+
+function drawAccessories() {
+  accGroup.innerHTML = '';
+  if (activeAccs.has('headband')) {
+    accGroup.appendChild(svgEl('path', {d:'M36 128 Q120 108 204 128', stroke:'#ff66aa', 'stroke-width':'12', fill:'none', 'stroke-linecap':'round', opacity:'0.9'}));
+  }
+  if (activeAccs.has('tiara')) {
+    accGroup.appendChild(svgEl('path', {d:'M70 105 L85 75 L100 95 L120 60 L140 95 L155 75 L170 105', stroke:'#ffd700', 'stroke-width':'5', fill:'none', 'stroke-linejoin':'round'}));
+    [[85,75,'#ff88cc'],[120,60,'#ff4499'],[155,75,'#ff88cc']].forEach(([x,y,f]) => {
+      accGroup.appendChild(svgEl('circle', {cx:x, cy:y, r:'7', fill:f, stroke:'#ffd700', 'stroke-width':'2'}));
+    });
+  }
+  if (activeAccs.has('bow')) {
+    const bx = currentStyle === 'bun' ? 120 : (currentStyle==='pigtails'?120:148);
+    const by = currentStyle === 'bun' ? 20  : 78;
+    const bow = svgEl('text', {x:bx, y:by, 'font-size':'28', 'text-anchor':'middle'}); bow.textContent = '🎀';
+    accGroup.appendChild(bow);
+  }
+  if (activeAccs.has('flower')) {
+    const fl = svgEl('text', {x:'165',y:'80','font-size':'26','text-anchor':'middle'}); fl.textContent = '🌸';
+    accGroup.appendChild(fl);
+  }
+  if (activeAccs.has('stars')) {
+    [[60,85],[180,80],[45,140],[196,135]].forEach(([x,y]) => {
+      const st = svgEl('text', {x, y, 'font-size':'16', 'text-anchor':'middle'}); st.textContent = '⭐';
+      accGroup.appendChild(st);
+    });
+  }
+  if (activeAccs.has('glasses')) {
+    accGroup.appendChild(svgEl('rect', {x:'66','y':'150',width:'44',height:'28',rx:'14',fill:'none',stroke:'#444','stroke-width':'3'}));
+    accGroup.appendChild(svgEl('rect', {x:'130','y':'150',width:'44',height:'28',rx:'14',fill:'none',stroke:'#444','stroke-width':'3'}));
+    accGroup.appendChild(svgEl('line', {x1:'110',y1:'164',x2:'130',y2:'164',stroke:'#444','stroke-width':'3'}));
+    accGroup.appendChild(svgEl('line', {x1:'66', y1:'164',x2:'50', y2:'160',stroke:'#444','stroke-width':'3'}));
+    accGroup.appendChild(svgEl('line', {x1:'174',y1:'164',x2:'190',y2:'160',stroke:'#444','stroke-width':'3'}));
+  }
+}
+
+function render() { drawHair(); drawAccessories(); }
+
+function setStyle(style, btn) {
+  currentStyle = style;
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function setColour(c, c2, swatch) {
+  hairColour  = c;
+  hairColour2 = c2;
+  document.querySelectorAll('.colour-swatch').forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
+  render();
+}
+
+function toggleAcc(name, btn) {
+  if (activeAccs.has(name)) { activeAccs.delete(name); btn.classList.remove('active'); }
+  else                       { activeAccs.add(name);    btn.classList.add('active');    }
+  render();
+}
+
+function resetAll() {
+  currentStyle = 'short';
+  hairColour   = '#4a2800';
+  hairColour2  = '#2a1400';
+  activeAccs.clear();
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.toggle('active', b.dataset.style === 'short'));
+  document.querySelectorAll('.colour-swatch').forEach((s,i) => s.classList.toggle('active', i===0));
+  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('active'));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

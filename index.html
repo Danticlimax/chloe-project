@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chloe's Game World ✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffb3d9 0%, #ff80bf 40%, #d966ff 100%);
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .stars-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      font-size: 20px;
+      animation: twinkle 2s infinite alternate;
+      opacity: 0.6;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.3; transform: scale(0.8); }
+      to   { opacity: 0.9; transform: scale(1.2); }
+    }
+
+    .content { position: relative; z-index: 1; width: 100%; max-width: 800px; }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: white;
+      text-shadow: 4px 4px 0 #d63384, 6px 6px 0 rgba(0,0,0,0.15);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 700;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 24px;
+      padding: 35px 25px;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.12), 0 12px 30px rgba(0,0,0,0.15);
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: block;
+      border: 3px solid rgba(255,255,255,0.8);
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 0 rgba(0,0,0,0.12), 0 18px 35px rgba(0,0,0,0.18);
+    }
+
+    .game-card:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 0 rgba(0,0,0,0.12);
+    }
+
+    .game-icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      display: block;
+      animation: bounce 2s infinite;
+    }
+
+    .game-card:nth-child(2) .game-icon { animation-delay: 0.3s; }
+    .game-card:nth-child(3) .game-icon { animation-delay: 0.6s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .game-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .game-desc {
+      font-size: 0.95rem;
+      color: #888;
+      line-height: 1.4;
+    }
+
+    .card-stars  { --accent: #ff6eb4; }
+    .card-hair   { --accent: #bf5fff; }
+    .card-makeup { --accent: #ff5fa0; }
+
+    .game-card .game-title { color: var(--accent); }
+
+    .play-btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 28px;
+      border-radius: 50px;
+      background: var(--accent);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+
+    .game-card:hover .play-btn { filter: brightness(1.1); }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Twinkling stars background -->
+  <div class="stars-bg" id="starsBg"></div>
+
+  <div class="content">
+    <header>
+      <h1>🌟 Chloe's Game World 🌟</h1>
+      <p class="subtitle">Pick a game and have fun! 💖</p>
+    </header>
+
+    <div class="games-grid">
+      <a href="stars.html" class="game-card card-stars">
+        <span class="game-icon">⭐</span>
+        <div class="game-title">Catch the Stars</div>
+        <div class="game-desc">Move your basket and catch as many falling stars as you can!</div>
+        <div class="play-btn">Play!</div>
+      </a>
+
+      <a href="hair.html" class="game-card card-hair">
+        <span class="game-icon">💇‍♀️</span>
+        <div class="game-title">Hair Salon</div>
+        <div class="game-desc">Style your girl's hair with cool colours and accessories!</div>
+        <div class="play-btn">Play!</div>
+      </a>
+
+      <a href="makeup.html" class="game-card card-makeup">
+        <span class="game-icon">💄</span>
+        <div class="game-title">Makeup Studio</div>
+        <div class="game-desc">Do eyeshadow, lipstick, blush and more on your cartoon girl!</div>
+        <div class="play-btn">Play!</div>
+      </a>
+    </div>
+
+    <footer>Made with 💖 just for Chloe!</footer>
+  </div>
+
+  <script>
+    const bg = document.getElementById('starsBg');
+    const emojis = ['⭐','🌟','✨','💫','⚡','🌸','💕'];
+    for (let i = 0; i < 25; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top  = Math.random() * 100 + '%';
+      s.style.fontSize = (12 + Math.random() * 20) + 'px';
+      s.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      s.style.animationDelay = (Math.random() * 2) + 's';
+      bg.appendChild(s);
+    }
+  </script>
+</body>
+</html>
