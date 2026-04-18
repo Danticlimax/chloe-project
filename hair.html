@@ -12,498 +12,475 @@
       min-height: 100vh;
       background: linear-gradient(135deg, #f9c6e8 0%, #e8aaff 100%);
       font-family: 'Nunito', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
       padding: 10px 10px 30px;
     }
 
-    header {
-      text-align: center;
-      padding: 10px 0 8px;
-      width: 100%;
-    }
-
-    h1 {
-      font-family: 'Fredoka One', cursive;
-      font-size: clamp(1.6rem, 6vw, 2.6rem);
-      color: #c030a0;
-      text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
-    }
+    header { text-align: center; padding: 10px 0 8px; width: 100%; }
+    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(1.6rem,6vw,2.6rem); color: #c030a0; text-shadow: 2px 2px 0 rgba(255,255,255,0.6); }
 
     #back {
       position: fixed; top: 12px; left: 14px;
-      text-decoration: none; color: #c030a0;
-      font-size: 1.4rem; font-weight: 700; z-index: 20;
-      background: rgba(255,255,255,0.6); border-radius: 50px;
-      padding: 4px 12px;
+      text-decoration: none; color: #c030a0; font-size: 1.4rem; font-weight: 700; z-index: 20;
+      background: rgba(255,255,255,0.6); border-radius: 50px; padding: 4px 12px;
     }
 
     .studio {
-      display: flex;
-      gap: 16px;
-      width: 100%;
-      max-width: 820px;
-      align-items: flex-start;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: flex; gap: 16px; width: 100%; max-width: 860px;
+      align-items: flex-start; justify-content: center; flex-wrap: wrap;
     }
 
-    /* Character */
     #char-wrap {
-      background: white;
-      border-radius: 24px;
+      background: white; border-radius: 24px;
       box-shadow: 0 6px 20px rgba(180,0,180,0.15);
-      padding: 20px;
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      padding: 16px; flex: 0 0 auto;
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; overflow: hidden;
     }
 
-    #char-svg { width: 240px; height: 340px; overflow: visible; }
+    #char-svg { width: 220px; height: 320px; overflow: visible; }
 
-    /* Panels */
+    /* Snip animation */
+    #snip-emoji {
+      position: absolute; font-size: 2.5rem; pointer-events: none;
+      opacity: 0; transition: none; top: 40%; left: 50%; transform: translate(-50%,-50%);
+    }
+    #snip-emoji.pop {
+      animation: snipPop 0.7s ease-out forwards;
+    }
+    @keyframes snipPop {
+      0%   { opacity: 1; transform: translate(-50%,-50%) scale(0.5); }
+      50%  { opacity: 1; transform: translate(-50%,-120%) scale(1.4); }
+      100% { opacity: 0; transform: translate(-50%,-180%) scale(1); }
+    }
+
     .panel {
-      background: white;
-      border-radius: 20px;
-      padding: 16px;
+      background: white; border-radius: 20px; padding: 16px;
       box-shadow: 0 6px 20px rgba(180,0,180,0.12);
-      flex: 1 1 200px;
-      min-width: 180px;
-      max-width: 280px;
+      flex: 1 1 200px; min-width: 180px; max-width: 270px;
     }
 
-    .panel h3 {
-      font-family: 'Fredoka One', cursive;
-      color: #b030c0;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
-      text-align: center;
-    }
+    .panel h3 { font-family: 'Fredoka One', cursive; color: #b030c0; font-size: 1.05rem; margin-bottom: 10px; text-align: center; }
 
-    .style-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .style-btn {
-      border: 2.5px solid #e0b0f0;
-      border-radius: 12px;
-      background: #fdf0ff;
-      padding: 8px 4px;
-      cursor: pointer;
-      text-align: center;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #880088;
-      transition: all 0.15s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      border: 2.5px solid #e0b0f0; border-radius: 12px; background: #fdf0ff;
+      padding: 8px 4px; cursor: pointer; text-align: center;
+      font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; color: #880088;
+      transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px;
     }
-
-    .style-btn .icon { font-size: 1.6rem; }
+    .style-btn .icon { font-size: 1.5rem; }
     .style-btn:hover { border-color: #c040d0; background: #f5d0ff; }
-    .style-btn.active { border-color: #c040d0; background: linear-gradient(135deg,#f5d0ff,#e0a0ff); box-shadow: 0 2px 8px rgba(180,0,220,0.3); }
+    .style-btn.active { border-color: #c040d0; background: linear-gradient(135deg,#f5d0ff,#e0a0ff); box-shadow: 0 2px 8px rgba(180,0,220,0.25); }
 
-    .colour-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
+    .colour-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
     .colour-swatch {
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
+      width: 100%; aspect-ratio: 1; border-radius: 50%; border: 3px solid transparent;
+      cursor: pointer; transition: transform 0.15s, border-color 0.15s;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
+    .colour-swatch:hover  { transform: scale(1.15); }
+    .colour-swatch.active { border-color: #440044; transform: scale(1.1); }
 
-    .colour-swatch:hover   { transform: scale(1.15); }
-    .colour-swatch.active  { border-color: #440044; transform: scale(1.1); }
+    /* Cut panel */
+    .length-bar {
+      display: flex; gap: 6px; margin: 10px 0 14px;
+      justify-content: center;
+    }
+    .length-pip {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #e0b0f0; border: 2px solid #c080e0;
+      transition: background 0.2s;
+    }
+    .length-pip.filled { background: #b030c0; border-color: #880099; }
 
-    .acc-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+    .length-label {
+      text-align: center; font-family: 'Fredoka One', cursive;
+      font-size: 1rem; color: #b030c0; margin-bottom: 12px; min-height: 1.4em;
     }
 
-    .acc-btn {
-      border: 2px solid #e0b0f0;
-      border-radius: 10px;
-      background: #fdf0ff;
-      padding: 6px 2px;
-      cursor: pointer;
-      text-align: center;
-      font-size: 1.5rem;
-      transition: all 0.15s;
+    .cut-btn {
+      width: 100%; padding: 14px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg,#ff80cc,#cc0080);
+      color: white; font-family: 'Fredoka One', cursive; font-size: 1.3rem;
+      cursor: pointer; box-shadow: 0 4px 0 #880055; transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 1px;
     }
+    .cut-btn:hover { filter: brightness(1.08); }
+    .cut-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #880055; }
+    .cut-btn:disabled { background: #ddd; box-shadow: 0 4px 0 #bbb; cursor: default; }
 
-    .acc-btn:hover  { background: #f0d0ff; border-color: #c040d0; }
-    .acc-btn.active { background: linear-gradient(135deg,#f0c0ff,#d890ff); border-color: #b030c0; }
+    .grow-btn {
+      margin-top: 10px; width: 100%; padding: 10px; border-radius: 50px;
+      border: 2.5px solid #c0e0a0; background: #f0fff0;
+      color: #3a7a00; font-family: 'Fredoka One', cursive; font-size: 1rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .grow-btn:hover { background: #d8f5c8; }
+    .grow-btn:disabled { opacity: 0.4; cursor: default; }
 
     .reset-btn {
-      margin-top: 14px;
-      width: 100%;
-      padding: 10px;
-      border-radius: 50px;
-      border: none;
-      background: linear-gradient(135deg, #ff80cc, #cc0080);
-      color: white;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #880055;
+      margin-top: 10px; width: 100%; padding: 10px; border-radius: 50px; border: none;
+      background: linear-gradient(135deg,#ff80cc,#cc0080); color: white;
+      font-family: 'Fredoka One', cursive; font-size: 1rem;
+      cursor: pointer; box-shadow: 0 3px 0 #880055;
     }
-
     .reset-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #880055; }
   </style>
 </head>
 <body>
 
 <a href="index.html" id="back">← Back</a>
-
 <header><h1>💇‍♀️ Hair Salon 💇‍♀️</h1></header>
 
 <div class="studio">
 
-  <!-- Character display -->
+  <!-- Character -->
   <div id="char-wrap">
-    <svg id="char-svg" viewBox="0 0 240 340" xmlns="http://www.w3.org/2000/svg">
-      <!-- HAIR BACK (behind face) -->
-      <g id="hair-back"></g>
+    <div id="snip-emoji">✂️</div>
+    <svg id="char-svg" viewBox="0 0 220 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="hairClip">
+          <rect id="clipRect" x="-60" y="-60" width="380" height="500"/>
+        </clipPath>
+        <radialGradient id="faceGrad" cx="45%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#fde8c8"/>
+          <stop offset="100%" stop-color="#f5c898"/>
+        </radialGradient>
+      </defs>
 
-      <!-- NECK -->
-      <rect x="103" y="245" width="34" height="40" rx="10" fill="#FDDBB4"/>
+      <!-- ① HAIR BEHIND FACE -->
+      <g id="hair-back" clip-path="url(#hairClip)"></g>
 
-      <!-- SHOULDERS -->
-      <ellipse cx="120" cy="315" rx="75" ry="35" fill="#ff99cc"/>
+      <!-- ② NECK + SHOULDERS -->
+      <rect x="95" y="252" width="30" height="38" rx="10" fill="#f5c898"/>
+      <ellipse cx="110" cy="310" rx="100" ry="38" fill="#ff99cc"/>
+      <ellipse cx="110" cy="305" rx="82" ry="30" fill="#ff80bb"/>
 
-      <!-- FACE -->
-      <ellipse cx="120" cy="175" rx="82" ry="95" fill="#FDDBB4"/>
+      <!-- ③ FACE -->
+      <ellipse cx="110" cy="170" rx="80" ry="88" fill="url(#faceGrad)"/>
 
       <!-- EARS -->
-      <ellipse cx="40"  cy="175" rx="18" ry="22" fill="#FDDBB4"/>
-      <ellipse cx="200" cy="175" rx="18" ry="22" fill="#FDDBB4"/>
-      <ellipse cx="40"  cy="175" rx="10" ry="13" fill="#f5c49e"/>
-      <ellipse cx="200" cy="175" rx="10" ry="13" fill="#f5c49e"/>
+      <ellipse cx="32" cy="172" rx="17" ry="21" fill="#f5c898"/>
+      <ellipse cx="188" cy="172" rx="17" ry="21" fill="#f5c898"/>
+      <ellipse cx="32" cy="172" rx="9" ry="12" fill="#edb27e"/>
+      <ellipse cx="188" cy="172" rx="9" ry="12" fill="#edb27e"/>
 
       <!-- EYE WHITES -->
-      <ellipse cx="90"  cy="160" rx="20" ry="18" fill="white"/>
-      <ellipse cx="150" cy="160" rx="20" ry="18" fill="white"/>
-
-      <!-- EYESHADOW (hidden by default) -->
-      <ellipse id="eyeshadow-l" cx="90"  cy="158" rx="20" ry="14" fill="transparent" opacity="0.45"/>
-      <ellipse id="eyeshadow-r" cx="150" cy="158" rx="20" ry="14" fill="transparent" opacity="0.45"/>
+      <ellipse cx="84" cy="158" rx="22" ry="19" fill="white"/>
+      <ellipse cx="136" cy="158" rx="22" ry="19" fill="white"/>
 
       <!-- IRISES -->
-      <circle cx="90"  cy="162" r="12" fill="#5B3A29"/>
-      <circle cx="150" cy="162" r="12" fill="#5B3A29"/>
+      <circle cx="84"  cy="161" r="14" fill="#5b9bd5"/>
+      <circle cx="136" cy="161" r="14" fill="#5b9bd5"/>
+      <circle cx="84"  cy="161" r="9"  fill="#1e4d8c"/>
+      <circle cx="136" cy="161" r="9"  fill="#1e4d8c"/>
       <!-- PUPILS -->
-      <circle cx="90"  cy="162" r="7"  fill="#1a0a00"/>
-      <circle cx="150" cy="162" r="7"  fill="#1a0a00"/>
+      <circle cx="84"  cy="161" r="5.5" fill="#0a0a0a"/>
+      <circle cx="136" cy="161" r="5.5" fill="#0a0a0a"/>
       <!-- SHINE -->
-      <circle cx="94"  cy="157" r="3.5" fill="white"/>
-      <circle cx="154" cy="157" r="3.5" fill="white"/>
+      <circle cx="90"  cy="155" r="4"   fill="white"/>
+      <circle cx="142" cy="155" r="4"   fill="white"/>
+      <circle cx="87"  cy="166" r="1.8" fill="rgba(255,255,255,0.55)"/>
+      <circle cx="139" cy="166" r="1.8" fill="rgba(255,255,255,0.55)"/>
 
-      <!-- LASHES -->
-      <path d="M72 148 Q80 140 90 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M108 148 Q100 140 90 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M132 148 Q140 140 150 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M168 148 Q160 140 150 145" stroke="#1a0a00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- UPPER LASHES -->
+      <path d="M63 148 Q73 138 84 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <path d="M84 143 Q95 138 105 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <path d="M115 148 Q126 138 136 143" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <path d="M136 143 Q147 138 157 148" stroke="#1a0a00" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <!-- Lash tips -->
+      <line x1="65"  y1="151" x2="61"  y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="74"  y1="144" x2="72"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="84"  y1="142" x2="84"  y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="94"  y1="144" x2="96"  y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="103" y1="151" x2="107" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="117" y1="151" x2="113" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="126" y1="144" x2="124" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="136" y1="142" x2="136" y2="132" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="146" y1="144" x2="148" y2="134" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="155" y1="151" x2="159" y2="141" stroke="#1a0a00" stroke-width="2.2" stroke-linecap="round"/>
 
       <!-- EYEBROWS -->
-      <path id="brow-l" d="M72 138 Q90 128 108 138" stroke="#5B3A29" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      <path id="brow-r" d="M132 138 Q150 128 168 138" stroke="#5B3A29" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M63 132 Q84 121 105 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path d="M115 132 Q136 121 157 132" stroke="#6b4226" stroke-width="4.5" fill="none" stroke-linecap="round"/>
 
-      <!-- NOSE -->
-      <ellipse cx="120" cy="195" rx="9" ry="7" fill="#f5c49e"/>
-      <circle cx="114" cy="198" r="4" fill="#edb88a"/>
-      <circle cx="126" cy="198" r="4" fill="#edb88a"/>
+      <!-- NOSE — two soft dots -->
+      <circle cx="105" cy="192" r="4.5" fill="#edb27e"/>
+      <circle cx="115" cy="192" r="4.5" fill="#edb27e"/>
 
-      <!-- BLUSH -->
-      <ellipse id="blush-l" cx="68"  cy="192" rx="18" ry="12" fill="#ffb3c6" opacity="0"/>
-      <ellipse id="blush-r" cx="172" cy="192" rx="18" ry="12" fill="#ffb3c6" opacity="0"/>
+      <!-- CHEEKS (always on) -->
+      <ellipse cx="56"  cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0.45"/>
+      <ellipse cx="164" cy="190" rx="22" ry="13" fill="#ffb3c6" opacity="0.45"/>
 
       <!-- MOUTH -->
-      <path id="lips" d="M98 220 Q110 215 120 218 Q130 215 142 220 Q130 235 120 237 Q110 235 98 220Z" fill="#e8667a"/>
-      <path d="M98 220 Q120 228 142 220" stroke="#c04060" stroke-width="1.5" fill="none"/>
+      <path d="M92 214 Q110 232 128 214" stroke="#e8667a" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="92"  cy="214" r="2.8" fill="#e8667a"/>
+      <circle cx="128" cy="214" r="2.8" fill="#e8667a"/>
 
-      <!-- HAIR FRONT -->
-      <g id="hair-front"></g>
-
-      <!-- ACCESSORIES -->
-      <g id="accessories"></g>
+      <!-- ④ HAIR FRONT (on top of face) -->
+      <g id="hair-front" clip-path="url(#hairClip)"></g>
     </svg>
   </div>
 
-  <!-- Style panel -->
+  <!-- Style + Colour panel -->
   <div class="panel">
     <h3>✂️ Hairstyle</h3>
-    <div class="style-grid" id="style-grid">
-      <button class="style-btn active" data-style="short" onclick="setStyle('short',this)">
-        <span class="icon">💆</span>Short Bob
-      </button>
-      <button class="style-btn" data-style="long" onclick="setStyle('long',this)">
-        <span class="icon">👩</span>Long &amp; Straight
-      </button>
-      <button class="style-btn" data-style="curly" onclick="setStyle('curly',this)">
-        <span class="icon">🌀</span>Curly
-      </button>
-      <button class="style-btn" data-style="bun" onclick="setStyle('bun',this)">
-        <span class="icon">🍩</span>Top Bun
-      </button>
-      <button class="style-btn" data-style="pigtails" onclick="setStyle('pigtails',this)">
-        <span class="icon">🎀</span>Pigtails
-      </button>
-      <button class="style-btn" data-style="ponytail" onclick="setStyle('ponytail',this)">
-        <span class="icon">🐴</span>Ponytail
-      </button>
+    <div class="style-grid">
+      <button class="style-btn active" data-style="short"     onclick="setStyle('short',this)">    <span class="icon">💆</span>Short Bob</button>
+      <button class="style-btn"        data-style="long"      onclick="setStyle('long',this)">     <span class="icon">👩</span>Long</button>
+      <button class="style-btn"        data-style="curly"     onclick="setStyle('curly',this)">    <span class="icon">🌀</span>Curly</button>
+      <button class="style-btn"        data-style="bun"       onclick="setStyle('bun',this)">      <span class="icon">🍩</span>Top Bun</button>
+      <button class="style-btn"        data-style="pigtails"  onclick="setStyle('pigtails',this)"> <span class="icon">🎀</span>Pigtails</button>
+      <button class="style-btn"        data-style="ponytail"  onclick="setStyle('ponytail',this)"> <span class="icon">🐴</span>Ponytail</button>
     </div>
 
     <h3 style="margin-top:16px">🎨 Colour</h3>
-    <div class="colour-grid" id="colour-grid">
-      <div class="colour-swatch active" style="background:#4a2800" title="Dark Brown" onclick="setColour('#4a2800','#2a1400',this)"></div>
-      <div class="colour-swatch" style="background:#8B4513" title="Brown" onclick="setColour('#8B4513','#5c2d0a',this)"></div>
-      <div class="colour-swatch" style="background:#c8a060" title="Blonde" onclick="setColour('#c8a060','#a07830',this)"></div>
-      <div class="colour-swatch" style="background:#f0e060" title="Light Blonde" onclick="setColour('#f0e060','#c0b030',this)"></div>
-      <div class="colour-swatch" style="background:#cc2200" title="Red" onclick="setColour('#cc2200','#880000',this)"></div>
-      <div class="colour-swatch" style="background:#ff66aa" title="Pink" onclick="setColour('#ff66aa','#cc3366',this)"></div>
-      <div class="colour-swatch" style="background:#9933ff" title="Purple" onclick="setColour('#9933ff','#6600cc',this)"></div>
-      <div class="colour-swatch" style="background:#0099ff" title="Blue" onclick="setColour('#0099ff','#0066cc',this)"></div>
-      <div class="colour-swatch" style="background:#222222" title="Black" onclick="setColour('#222222','#000000',this)"></div>
-      <div class="colour-swatch" style="background:#ffffff;border-color:#ddd" title="White/Silver" onclick="setColour('#e8e8e8','#cccccc',this)"></div>
-      <div class="colour-swatch" style="background:linear-gradient(135deg,#ff4444,#ffaa00,#44ff44,#0088ff,#aa00ff)" title="Rainbow" onclick="setColour('rainbow','rainbow',this)"></div>
-      <div class="colour-swatch" style="background:linear-gradient(135deg,#ff88cc,#ffccee)" title="Pastel Pink" onclick="setColour('#ffbbdd','#ff88bb',this)"></div>
+    <div class="colour-grid">
+      <div class="colour-swatch active" style="background:#3d2000" onclick="setColour('#3d2000','#1e1000',this)"></div>
+      <div class="colour-swatch" style="background:#7a3b10" onclick="setColour('#7a3b10','#4a1e00',this)"></div>
+      <div class="colour-swatch" style="background:#c8904a" onclick="setColour('#c8904a','#9a6020',this)"></div>
+      <div class="colour-swatch" style="background:#f0d860" onclick="setColour('#f0d860','#c0a830',this)"></div>
+      <div class="colour-swatch" style="background:#cc2200" onclick="setColour('#cc2200','#880000',this)"></div>
+      <div class="colour-swatch" style="background:#ff55aa" onclick="setColour('#ff55aa','#cc2277',this)"></div>
+      <div class="colour-swatch" style="background:#9922ff" onclick="setColour('#9922ff','#6600bb',this)"></div>
+      <div class="colour-swatch" style="background:#0099ee" onclick="setColour('#0099ee','#005599',this)"></div>
+      <div class="colour-swatch" style="background:#181818" onclick="setColour('#181818','#000000',this)"></div>
+      <div class="colour-swatch" style="background:#d8d8d8;border-color:#ccc" onclick="setColour('#d8d8d8','#aaaaaa',this)"></div>
+      <div class="colour-swatch" style="background:linear-gradient(135deg,#ff4444,#ffaa00,#44ee44,#0088ff,#aa00ff)" onclick="setColour('rainbow','rainbow',this)"></div>
+      <div class="colour-swatch" style="background:#ffc0d8" onclick="setColour('#ffc0d8','#ff88aa',this)"></div>
     </div>
   </div>
 
-  <!-- Accessories panel -->
+  <!-- Cut panel -->
   <div class="panel">
-    <h3>💎 Accessories</h3>
-    <div class="acc-grid" id="acc-grid">
-      <button class="acc-btn" data-acc="bow"      onclick="toggleAcc('bow',this)"     title="Bow">🎀</button>
-      <button class="acc-btn" data-acc="tiara"    onclick="toggleAcc('tiara',this)"   title="Tiara">👑</button>
-      <button class="acc-btn" data-acc="flower"   onclick="toggleAcc('flower',this)"  title="Flower">🌸</button>
-      <button class="acc-btn" data-acc="stars"    onclick="toggleAcc('stars',this)"   title="Stars">⭐</button>
-      <button class="acc-btn" data-acc="glasses"  onclick="toggleAcc('glasses',this)" title="Glasses">👓</button>
-      <button class="acc-btn" data-acc="headband" onclick="toggleAcc('headband',this)"title="Headband">🎗️</button>
+    <h3>✂️ Cut Hair</h3>
+
+    <div class="length-label" id="lengthLabel">Rapunzel 🌟</div>
+
+    <div class="length-bar" id="lengthBar">
+      <div class="length-pip filled"></div>
+      <div class="length-pip filled"></div>
+      <div class="length-pip filled"></div>
+      <div class="length-pip filled"></div>
+      <div class="length-pip filled"></div>
     </div>
 
+    <button class="cut-btn" id="cutBtn" onclick="cutHair()">✂️ Snip!</button>
+    <button class="grow-btn" id="growBtn" onclick="growHair()" disabled>🌱 Grow back</button>
     <button class="reset-btn" onclick="resetAll()">🔄 Start Over</button>
   </div>
 
 </div>
 
 <script>
-// State
-let currentStyle  = 'short';
-let hairColour    = '#4a2800';
-let hairColour2   = '#2a1400';
-let activeAccs    = new Set();
-const isRainbow   = () => hairColour === 'rainbow';
+// ── State ────────────────────────────────────────────────
+let currentStyle = 'short';
+let hairC  = '#3d2000';
+let hairC2 = '#1e1000';
+let clipLevelIndex = 0;  // 0 = longest
 
-const hairBack  = document.getElementById('hair-back');
-const hairFront = document.getElementById('hair-front');
-const accGroup  = document.getElementById('accessories');
+// Clip heights: y=-60 baseline, so height N clips at y = N-60
+// We want full=past bottom, then progressively shorter
+const CLIP_LEVELS = [500, 380, 310, 250, 195];
+const CLIP_LABELS = ['Rapunzel 🌟','Long 💁','Medium ✂️','Short 💇','Cropped 🌟'];
 
-function svgEl(tag, attrs) {
-  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k, v);
-  return el;
+// ── SVG helpers ───────────────────────────────────────────
+const svg   = document.getElementById('char-svg');
+const hBack = document.getElementById('hair-back');
+const hFront= document.getElementById('hair-front');
+
+function el(tag, attrs) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
 }
 
-function rainbowId(id) {
-  const grad = svgEl('linearGradient', { id, x1:'0%', y1:'0%', x2:'100%', y2:'0%' });
-  [['0%','#ff4444'],['20%','#ffaa00'],['40%','#ffee00'],['60%','#44ff44'],['80%','#0088ff'],['100%','#aa00ff']].forEach(([o,c]) => {
-    const s = svgEl('stop', { offset: o }); s.style.stopColor = c; grad.appendChild(s);
-  });
-  return grad;
-}
+function isRainbow() { return hairC === 'rainbow'; }
 
-function getColour(id='hc') {
-  if (isRainbow()) return `url(#${id})`;
-  return hairColour;
-}
-
-function getColour2() {
-  if (isRainbow()) return `url(#hc2)`;
-  return hairColour2;
-}
-
-function injectGradients(svg) {
-  if (!isRainbow()) return;
+function ensureGradients() {
   let defs = svg.querySelector('defs');
-  if (!defs) { defs = svgEl('defs',{}); svg.prepend(defs); }
-  defs.querySelectorAll('.hgrad').forEach(e => e.remove());
-  ['hc','hc2'].forEach(id => {
-    const g = rainbowId(id); g.classList.add('hgrad'); defs.appendChild(g);
+  defs.querySelectorAll('.hg').forEach(n => n.remove());
+  if (!isRainbow()) return;
+  ['hg1','hg2'].forEach((id,i) => {
+    const g = el('linearGradient',{id, x1:'0%',y1:'0%',x2:'100%',y2:'60%'});
+    g.classList.add('hg');
+    [['0%','#ff4444'],['25%','#ffaa00'],['50%','#44ee44'],['75%','#0088ff'],['100%','#aa00ff']]
+      .forEach(([o,c]) => { const s=el('stop',{offset:o}); s.style.stopColor=c; g.appendChild(s); });
+    defs.appendChild(g);
   });
 }
 
+function C()  { return isRainbow() ? 'url(#hg1)' : hairC;  }
+function C2() { return isRainbow() ? 'url(#hg2)' : hairC2; }
+
+// ── Hair drawing ──────────────────────────────────────────
 function drawHair() {
-  const svg = document.getElementById('char-svg');
-  injectGradients(svg);
-  const c  = getColour();
-  const c2 = getColour2();
-  hairBack.innerHTML = '';
-  hairFront.innerHTML = '';
+  ensureGradients();
+  hBack.innerHTML  = '';
+  hFront.innerHTML = '';
+
+  // Face is centred at (110, 170), rx=80, ry=88
+  // Top of face: y ≈ 82, sides: x ≈ 30 and 190
 
   switch(currentStyle) {
+
     case 'short': {
-      // Back: slight volume behind
-      const back = svgEl('ellipse', {cx:'120',cy:'115',rx:'88',ry:'75',fill:c2});
-      hairBack.appendChild(back);
-      // Front: cap shape
-      const cap = svgEl('path', {d:'M38 148 Q36 80 120 62 Q204 80 202 148 Q180 100 120 98 Q60 100 38 148Z', fill:c});
-      // Side flicks
-      const sideL = svgEl('path', {d:'M38 148 Q20 175 30 200 Q50 195 58 175 Q50 155 38 148Z', fill:c});
-      const sideR = svgEl('path', {d:'M202 148 Q220 175 210 200 Q190 195 182 175 Q190 155 202 148Z', fill:c});
-      hairFront.append(cap, sideL, sideR);
+      // Back volume — slightly wider than face
+      hBack.appendChild(el('ellipse',{cx:'110',cy:'120',rx:'84',ry:'72',fill:C2()}));
+      // Front cap covering top of head
+      hFront.appendChild(el('path',{d:'M28 165 Q26 75 110 58 Q194 75 192 165 Q170 100 110 98 Q50 100 28 165Z',fill:C()}));
+      // Side pieces (not too long — bob ends around jaw)
+      hFront.appendChild(el('path',{d:'M28 165 Q12 188 20 215 Q38 208 44 185 Q36 173 28 165Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M192 165 Q208 188 200 215 Q182 208 176 185 Q184 173 192 165Z',fill:C()}));
       break;
     }
+
     case 'long': {
-      const back = svgEl('path', {d:'M36 140 Q20 200 30 310 Q75 330 120 330 Q165 330 210 310 Q220 200 204 140 Q180 90 120 70 Q60 90 36 140Z', fill:c2});
-      hairBack.appendChild(back);
-      const top = svgEl('path', {d:'M38 148 Q36 80 120 62 Q204 80 202 148 Q180 100 120 98 Q60 100 38 148Z', fill:c});
-      const sideL = svgEl('path', {d:'M36 140 Q15 200 28 310 Q60 295 58 175 Q50 155 36 140Z', fill:c});
-      const sideR = svgEl('path', {d:'M204 140 Q225 200 212 310 Q180 295 182 175 Q190 155 204 140Z', fill:c});
-      hairFront.append(top, sideL, sideR);
+      // Full back — hangs all the way down
+      hBack.appendChild(el('path',{d:'M28 158 Q10 210 16 310 Q60 335 110 336 Q160 335 204 310 Q210 210 192 158 Q168 80 110 62 Q52 80 28 158Z',fill:C2()}));
+      // Front cap
+      hFront.appendChild(el('path',{d:'M28 165 Q26 75 110 58 Q194 75 192 165 Q170 100 110 98 Q50 100 28 165Z',fill:C()}));
+      // Side curtains (front layer, slightly lighter)
+      hFront.appendChild(el('path',{d:'M28 165 Q10 215 16 305 Q42 295 44 185 Q36 173 28 165Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M192 165 Q210 215 204 305 Q178 295 176 185 Q184 173 192 165Z',fill:C()}));
       break;
     }
+
     case 'curly': {
-      const back = svgEl('ellipse', {cx:'120',cy:'110',rx:'95',ry:'82',fill:c2});
-      hairBack.appendChild(back);
-      const top = svgEl('path', {d:'M32 148 Q30 72 120 55 Q210 72 208 148 Q185 95 120 92 Q55 95 32 148Z', fill:c});
-      // Curl blobs
-      const curls = [
-        [30,170,22],[28,205,20],[35,238,18],[208,168,22],[212,204,20],[205,237,18],
-        [55,285,20],[90,295,18],[120,298,18],[150,295,18],[185,285,20]
+      // Back poof
+      hBack.appendChild(el('ellipse',{cx:'110',cy:'108',rx:'92',ry:'82',fill:C2()}));
+      // Poof bumps around head
+      const bumpCoords = [
+        [40,82,26],[70,62,24],[110,54,28],[150,62,24],[180,82,26],
+        [28,130,22],[192,130,22]
       ];
-      curls.forEach(([cx,cy,r]) => {
-        hairFront.appendChild(svgEl('circle', {cx,cy,r,fill:c}));
+      bumpCoords.forEach(([x,y,r]) => hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C2()})));
+      // Front cap
+      hFront.appendChild(el('path',{d:'M30 162 Q28 76 110 58 Q192 76 190 162 Q168 102 110 100 Q52 102 30 162Z',fill:C()}));
+      // Side curl blobs
+      [[22,170,20],[24,198,18],[30,225,16],[198,170,20],[196,198,18],[190,225,16]].forEach(([x,y,r]) => {
+        hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C()}));
       });
-      hairFront.appendChild(top);
+      // Bottom curl row
+      [[55,285,18],[88,295,16],[110,298,17],[132,295,16],[165,285,18]].forEach(([x,y,r]) => {
+        hFront.appendChild(el('circle',{cx:x,cy:y,r,fill:C()}));
+      });
       break;
     }
+
     case 'bun': {
-      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
-      const sideL = svgEl('path', {d:'M42 148 Q28 175 36 205 Q56 198 60 174 Q52 158 42 148Z', fill:c});
-      const sideR = svgEl('path', {d:'M198 148 Q212 175 204 205 Q184 198 180 174 Q188 158 198 148Z', fill:c});
-      const bunCirc = svgEl('circle', {cx:'120',cy:'52',r:'38',fill:c});
-      const bunShad = svgEl('circle', {cx:'120',cy:'52',r:'38',fill:'none',stroke:c2,'stroke-width':'4'});
-      const bunHigh = svgEl('ellipse', {cx:'108',cy:'42',rx:'12',ry:'8',fill:'rgba(255,255,255,0.2)'});
-      hairFront.append(top, sideL, sideR, bunCirc, bunShad, bunHigh);
+      // Bun on top — NOT clipped (sits above face)
+      hBack.appendChild(el('circle',{cx:'110',cy:'48',r:'38',fill:C2()}));
+      // Front cap (shorter sides)
+      hFront.appendChild(el('path',{d:'M32 160 Q30 80 110 64 Q190 80 188 160 Q168 105 110 103 Q52 105 32 160Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M32 160 Q18 180 26 206 Q44 200 46 178 Q40 168 32 160Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M188 160 Q202 180 194 206 Q176 200 174 178 Q180 168 188 160Z',fill:C()}));
+      // Bun front circle with highlight
+      hFront.appendChild(el('circle',{cx:'110',cy:'48',r:'38',fill:C()}));
+      hFront.appendChild(el('ellipse',{cx:'100',cy:'36',rx:'13',ry:'9',fill:'rgba(255,255,255,0.2)'}));
+      // Hair tie
+      hFront.appendChild(el('ellipse',{cx:'110',cy:'84',rx:'12',ry:'6',fill:C2()}));
       break;
     }
+
     case 'pigtails': {
-      const back = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q180 100 120 98 Q60 100 42 148Z', fill:c2});
-      hairBack.appendChild(back);
-      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
-      // Left pigtail
-      const ptL = svgEl('path', {d:'M36 155 Q-5 180 10 260 Q30 275 45 240 Q25 215 40 180 Q42 166 36 155Z', fill:c});
-      // Right pigtail
-      const ptR = svgEl('path', {d:'M204 155 Q245 180 230 260 Q210 275 195 240 Q215 215 200 180 Q198 166 204 155Z', fill:c});
-      // Bows/ties
-      const bowL = svgEl('text', {x:'10', y:'180', 'font-size':'22', 'text-anchor':'middle'}); bowL.textContent = '🎀';
-      const bowR = svgEl('text', {x:'228',y:'180', 'font-size':'22', 'text-anchor':'middle'}); bowR.textContent = '🎀';
-      hairFront.append(top, ptL, ptR, bowL, bowR);
+      // Back: two big tails going wide + down
+      hBack.appendChild(el('path',{d:'M30 155 Q-8 180 4 290 Q26 305 42 268 Q22 235 34 182 Q32 168 30 155Z',fill:C2()}));
+      hBack.appendChild(el('path',{d:'M190 155 Q228 180 216 290 Q194 305 178 268 Q198 235 186 182 Q188 168 190 155Z',fill:C2()}));
+      // Top cap
+      hFront.appendChild(el('path',{d:'M30 162 Q28 78 110 62 Q192 78 190 162 Q168 102 110 100 Q52 102 30 162Z',fill:C()}));
+      // Tail fronts
+      hFront.appendChild(el('path',{d:'M30 155 Q-8 178 4 286 Q26 298 42 264 Q22 232 34 180 Q32 166 30 155Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M190 155 Q228 178 216 286 Q194 298 178 264 Q198 232 186 180 Q188 166 190 155Z',fill:C()}));
+      // Hair ties
+      hFront.appendChild(el('ellipse',{cx:'34', cy:'165',rx:'10',ry:'6',fill:'#ff66aa'}));
+      hFront.appendChild(el('ellipse',{cx:'186',cy:'165',rx:'10',ry:'6',fill:'#ff66aa'}));
       break;
     }
+
     case 'ponytail': {
-      const top = svgEl('path', {d:'M42 148 Q40 88 120 72 Q200 88 198 148 Q178 102 120 100 Q62 102 42 148Z', fill:c});
-      const sideL = svgEl('path', {d:'M42 148 Q28 172 36 202 Q56 196 60 172 Q52 158 42 148Z', fill:c});
-      const sideR = svgEl('path', {d:'M198 148 Q212 172 204 202 Q184 196 180 172 Q188 158 198 148Z', fill:c});
-      // Tail going back and down
-      const tailBack = svgEl('path', {d:'M100 78 Q120 65 140 78 Q155 200 145 290 Q120 305 95 290 Q85 200 100 78Z', fill:c2});
-      hairBack.appendChild(tailBack);
-      const tailFront = svgEl('path', {d:'M105 80 Q120 68 135 80 Q148 190 140 285 Q120 298 100 285 Q92 190 105 80Z', fill:c});
-      const tie = svgEl('rect', {x:'108',y:'92',width:'24',height:'12',rx:'6',fill:'#ff66aa'});
-      hairFront.append(top, sideL, sideR, tailFront, tie);
+      // Tail hangs from back
+      hBack.appendChild(el('path',{d:'M96 78 Q110 62 124 78 Q138 180 130 295 Q110 308 90 295 Q82 180 96 78Z',fill:C2()}));
+      hBack.appendChild(el('path',{d:'M100 80 Q110 66 120 80 Q132 175 126 290 Q110 302 94 290 Q88 175 100 80Z',fill:C()}));
+      // Front cap
+      hFront.appendChild(el('path',{d:'M32 162 Q30 78 110 62 Q190 78 188 162 Q166 104 110 102 Q54 104 32 162Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M32 162 Q18 182 24 208 Q42 202 44 180 Q38 170 32 162Z',fill:C()}));
+      hFront.appendChild(el('path',{d:'M188 162 Q202 182 196 208 Q178 202 176 180 Q182 170 188 162Z',fill:C()}));
+      // Hair tie
+      hFront.appendChild(el('rect',{x:'100',y:'86',width:'20',height:'10',rx:'5',fill:'#ff66aa'}));
       break;
     }
   }
 }
 
-function drawAccessories() {
-  accGroup.innerHTML = '';
-  if (activeAccs.has('headband')) {
-    accGroup.appendChild(svgEl('path', {d:'M36 128 Q120 108 204 128', stroke:'#ff66aa', 'stroke-width':'12', fill:'none', 'stroke-linecap':'round', opacity:'0.9'}));
-  }
-  if (activeAccs.has('tiara')) {
-    accGroup.appendChild(svgEl('path', {d:'M70 105 L85 75 L100 95 L120 60 L140 95 L155 75 L170 105', stroke:'#ffd700', 'stroke-width':'5', fill:'none', 'stroke-linejoin':'round'}));
-    [[85,75,'#ff88cc'],[120,60,'#ff4499'],[155,75,'#ff88cc']].forEach(([x,y,f]) => {
-      accGroup.appendChild(svgEl('circle', {cx:x, cy:y, r:'7', fill:f, stroke:'#ffd700', 'stroke-width':'2'}));
-    });
-  }
-  if (activeAccs.has('bow')) {
-    const bx = currentStyle === 'bun' ? 120 : (currentStyle==='pigtails'?120:148);
-    const by = currentStyle === 'bun' ? 20  : 78;
-    const bow = svgEl('text', {x:bx, y:by, 'font-size':'28', 'text-anchor':'middle'}); bow.textContent = '🎀';
-    accGroup.appendChild(bow);
-  }
-  if (activeAccs.has('flower')) {
-    const fl = svgEl('text', {x:'165',y:'80','font-size':'26','text-anchor':'middle'}); fl.textContent = '🌸';
-    accGroup.appendChild(fl);
-  }
-  if (activeAccs.has('stars')) {
-    [[60,85],[180,80],[45,140],[196,135]].forEach(([x,y]) => {
-      const st = svgEl('text', {x, y, 'font-size':'16', 'text-anchor':'middle'}); st.textContent = '⭐';
-      accGroup.appendChild(st);
-    });
-  }
-  if (activeAccs.has('glasses')) {
-    accGroup.appendChild(svgEl('rect', {x:'66','y':'150',width:'44',height:'28',rx:'14',fill:'none',stroke:'#444','stroke-width':'3'}));
-    accGroup.appendChild(svgEl('rect', {x:'130','y':'150',width:'44',height:'28',rx:'14',fill:'none',stroke:'#444','stroke-width':'3'}));
-    accGroup.appendChild(svgEl('line', {x1:'110',y1:'164',x2:'130',y2:'164',stroke:'#444','stroke-width':'3'}));
-    accGroup.appendChild(svgEl('line', {x1:'66', y1:'164',x2:'50', y2:'160',stroke:'#444','stroke-width':'3'}));
-    accGroup.appendChild(svgEl('line', {x1:'174',y1:'164',x2:'190',y2:'160',stroke:'#444','stroke-width':'3'}));
-  }
+// ── Clip / cut logic ─────────────────────────────────────
+function applyClip() {
+  document.getElementById('clipRect').setAttribute('height', CLIP_LEVELS[clipLevelIndex]);
+  // Bun: never clip the top circle — remove clip from hFront for bun
+  // (handled via the SVG structure; bun top is drawn last in hFront anyway)
 }
 
-function render() { drawHair(); drawAccessories(); }
+function updateCutUI() {
+  const pips   = document.querySelectorAll('.length-pip');
+  const filled = CLIP_LEVELS.length - clipLevelIndex;
+  pips.forEach((p,i) => p.classList.toggle('filled', i < filled));
+  document.getElementById('lengthLabel').textContent = CLIP_LABELS[clipLevelIndex];
+  document.getElementById('cutBtn').disabled  = clipLevelIndex >= CLIP_LEVELS.length - 1;
+  document.getElementById('growBtn').disabled = clipLevelIndex === 0;
+}
 
+function cutHair() {
+  if (clipLevelIndex >= CLIP_LEVELS.length - 1) return;
+  clipLevelIndex++;
+  applyClip();
+  updateCutUI();
+  // Snip animation
+  const snip = document.getElementById('snip-emoji');
+  snip.classList.remove('pop');
+  void snip.offsetWidth; // reflow
+  snip.classList.add('pop');
+}
+
+function growHair() {
+  if (clipLevelIndex === 0) return;
+  clipLevelIndex--;
+  applyClip();
+  updateCutUI();
+}
+
+// ── Style / colour setters ────────────────────────────────
 function setStyle(style, btn) {
   currentStyle = style;
   document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  render();
+  drawHair();
 }
 
 function setColour(c, c2, swatch) {
-  hairColour  = c;
-  hairColour2 = c2;
+  hairC = c; hairC2 = c2;
   document.querySelectorAll('.colour-swatch').forEach(s => s.classList.remove('active'));
   swatch.classList.add('active');
-  render();
-}
-
-function toggleAcc(name, btn) {
-  if (activeAccs.has(name)) { activeAccs.delete(name); btn.classList.remove('active'); }
-  else                       { activeAccs.add(name);    btn.classList.add('active');    }
-  render();
+  drawHair();
 }
 
 function resetAll() {
-  currentStyle = 'short';
-  hairColour   = '#4a2800';
-  hairColour2  = '#2a1400';
-  activeAccs.clear();
-  document.querySelectorAll('.style-btn').forEach(b => b.classList.toggle('active', b.dataset.style === 'short'));
+  currentStyle   = 'short';
+  hairC          = '#3d2000';
+  hairC2         = '#1e1000';
+  clipLevelIndex = 0;
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.toggle('active', b.dataset.style==='short'));
   document.querySelectorAll('.colour-swatch').forEach((s,i) => s.classList.toggle('active', i===0));
-  document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('active'));
-  render();
+  applyClip();
+  updateCutUI();
+  drawHair();
 }
 
-render();
+// ── Init ─────────────────────────────────────────────────
+applyClip();
+updateCutUI();
+drawHair();
 </script>
 </body>
 </html>
